@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: net.sf.classmock.example.method.AuthorizationProxyTest
 -------------------------------------------------------------------------------
-Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.285 sec
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.378 sec
