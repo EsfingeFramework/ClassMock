@@ -1,8 +1,0 @@
-net\sf\esfinge\classmock\ClassMock.class
-net\sf\esfinge\classmock\MockClassLoader.class
-net\sf\esfinge\classmock\Method.class
-net\sf\esfinge\classmock\AbstractMethod.class
-net\sf\esfinge\classmock\Location.class
-net\sf\esfinge\classmock\Property.class
-net\sf\esfinge\classmock\Annotation.class
-net\sf\esfinge\classmock\ClassMockUtils.class
