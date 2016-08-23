@@ -1,5 +1,5 @@
-import net.sf.classmock.ClassMock;
-import net.sf.classmock.example.basic.Teste;
+import net.sf.esfinge.classmock.ClassMock;
+import net.sf.esfinge.classmock.example.basic.Teste;
 
 
 public class Dummy {

@@ -1,16 +1,16 @@
 package net.sf.classmock.example.property;
 
-import static net.sf.classmock.ClassMockUtils.newInstance;
-import static net.sf.classmock.ClassMockUtils.set;
+import static net.sf.esfinge.classmock.ClassMockUtils.newInstance;
+import static net.sf.esfinge.classmock.ClassMockUtils.set;
 
 import java.util.Map;
-
-import net.sf.classmock.ClassMock;
-import net.sf.classmock.Location;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import net.sf.esfinge.classmock.ClassMock;
+import net.sf.esfinge.classmock.Location;
 
 public class PropertyMapFactoryTest_ClassMock {
 	

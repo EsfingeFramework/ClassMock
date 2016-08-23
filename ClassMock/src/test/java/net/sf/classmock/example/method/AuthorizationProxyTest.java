@@ -1,7 +1,6 @@
 package net.sf.classmock.example.method;
 
-import static net.sf.classmock.ClassMockUtils.invoke;
-import net.sf.classmock.ClassMock;
+import static net.sf.esfinge.classmock.ClassMockUtils.invoke;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -11,6 +10,8 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import net.sf.esfinge.classmock.ClassMock;
 
 @RunWith(JMock.class)
 public class AuthorizationProxyTest {
