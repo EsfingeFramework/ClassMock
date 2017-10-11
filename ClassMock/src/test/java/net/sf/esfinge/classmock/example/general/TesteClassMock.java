@@ -1,0 +1,449 @@
+package net.sf.esfinge.classmock.example.general;
+
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import org.powermock.api.mockito.PowerMockito;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
+import net.sf.esfinge.classmock.ClassMock;
+import net.sf.esfinge.classmock.api.IAnnotationReader;
+import net.sf.esfinge.classmock.api.IClassWriter;
+import net.sf.esfinge.classmock.api.enums.ModifierEnum;
+import net.sf.esfinge.classmock.api.enums.VisibilityEnum;
+import net.sf.esfinge.classmock.imp.AnnotationImp;
+import net.sf.esfinge.classmock.imp.MethodImp;
+
+public class TesteClassMock {
+
+    private final String className = "MinhaClasseMock";
+
+    private static int counter;
+
+    @Test
+    public void reloadClass() {
+
+        final String name = "GenericTestClass";
+        final Class<?> clazz1 = ClassMock.of(name).build();
+        final Class<?> clazz2 = ClassMock.of(name).build();
+
+        Assert.assertEquals(clazz2, clazz1);
+    }
+
+    @Test
+    public void createMockPackageClass() {
+
+        final String fullName = "net.sf.esfinge.classmock.fake.dynamic." + this.getClassName();
+        final Class<?> clazz = ClassMock.of(fullName).build();
+
+        Assert.assertEquals(clazz.getCanonicalName(), fullName);
+    }
+
+    @Test
+    public void createInterface() {
+
+        final Class<?> clazz = ClassMock.of(this.getClassName()).asInterface().build();
+
+        Assert.assertTrue(clazz.isInterface());
+    }
+
+    @Test
+    public void createAbstract() {
+
+        final Class<?> clazz = ClassMock.of(this.getClassName()).asAbstract().build();
+
+        Assert.assertTrue(Modifier.isAbstract(clazz.getModifiers()));
+    }
+
+    @Test
+    public void createClass() {
+
+        final String name = this.getClassName();
+        final Class<?> clazz = ClassMock.of(name).build();
+
+        Assert.assertEquals(clazz.getSimpleName(), name);
+    }
+
+    @Test
+    public void createClassWithSuperClass() {
+
+        final IClassWriter mock = ClassMock.of(this.getClassName());
+        mock.superclass(Assert.class);
+
+        final Class<?> clazz = mock.build();
+        Assert.assertEquals(clazz.getSuperclass(), Assert.class);
+    }
+
+    @Test
+    public void createClassWithSuperClassAndInterfaces() {
+
+        final IClassWriter mock = ClassMock.of(this.getClassName());
+        mock.superclass(Assert.class);
+        mock.interfaces(Serializable.class, Cloneable.class);
+
+        final Class<?> clazz = mock.build();
+        final List<Class<?>> interfaces = Arrays.asList(clazz.getInterfaces());
+
+        Assert.assertEquals(clazz.getSuperclass(), Assert.class);
+        Assert.assertTrue(interfaces.contains(Serializable.class));
+        Assert.assertTrue(interfaces.contains(Cloneable.class));
+    }
+
+    @Test
+    public void createClassWithOneAnnotations() {
+
+        final IClassWriter mock = ClassMock.of(this.getClassName());
+        mock.annotation(Entity.class);
+
+        final Class<?> clazz = mock.build();
+
+        Assert.assertTrue(clazz.isAnnotationPresent(Entity.class));
+    }
+
+    @Test
+    public void createClassWithAnnotationsAndProperties() {
+
+        final String schemaName = "auth";
+        final String tableName = "ANY_TABLE_NAME_MOCK";
+
+        final IClassWriter mock = ClassMock.of(this.getClassName());
+        mock.annotation(Entity.class)
+                        .and()
+                        .annotation(Table.class)
+                        .property("schema", schemaName)
+                        .property("name", tableName);
+
+        final Class<?> clazz = mock.build();
+        final Table table = clazz.getAnnotation(Table.class);
+
+        Assert.assertTrue(clazz.isAnnotationPresent(Entity.class));
+        Assert.assertEquals(table.schema(), schemaName);
+        Assert.assertEquals(table.name(), tableName);
+    }
+
+    @Test
+    public void createClassWithInnerAnnotations() {
+
+        final String schemaName = "auth";
+        final String tableName = "ANY_TABLE_NAME_MOCK";
+
+        final String name1 = "findByName";
+        final String sql1 = "Select x From Something x.name = :name";
+
+        final String name2 = "findByAge";
+        final String sql2 = "Select x From Something x.age = :age";
+
+        final NamedQuery namedQuery1 = PowerMockito.mock(NamedQuery.class);
+        PowerMockito.when(namedQuery1.name()).thenReturn(name1);
+        PowerMockito.when(namedQuery1.query()).thenReturn(sql1);
+
+        final NamedQuery namedQuery2 = PowerMockito.mock(NamedQuery.class);
+        PowerMockito.when(namedQuery2.name()).thenReturn(name2);
+        PowerMockito.when(namedQuery2.query()).thenReturn(sql2);
+
+        final NamedQuery[] arrayQueries = { namedQuery1, namedQuery2 };
+
+        final IClassWriter mock = ClassMock.of(this.getClassName());
+        mock.annotation(NamedQueries.class)
+                        .property(arrayQueries)
+                        .and()
+                        .annotation(Entity.class)
+                        .and()
+                        .annotation(Table.class)
+                        .property("schema", schemaName)
+                        .property("name", tableName);
+
+        final Class<?> clazz = mock.build();
+        final Table table = clazz.getAnnotation(Table.class);
+
+        Assert.assertTrue(clazz.isAnnotationPresent(Entity.class));
+        Assert.assertEquals(table.schema(), schemaName);
+        Assert.assertEquals(table.name(), tableName);
+
+        for (final NamedQuery namedQuery : clazz.getAnnotation(NamedQueries.class).value()) {
+
+            if (name1.equals(namedQuery.name())) {
+                Assert.assertEquals(namedQuery.query(), sql1);
+            } else if (name2.equals(namedQuery.name())) {
+                Assert.assertEquals(namedQuery.query(), sql2);
+            }
+        }
+    }
+
+    @Test
+    public void createClassWithInnerAnnotationWrappers() {
+
+        final String schemaName = "auth";
+        final String tableName = "ANY_TABLE_NAME_MOCK";
+
+        final String name1 = "findByName";
+        final String sql1 = "Select x From Something x.name = :name";
+
+        final String name2 = "findByAge";
+        final String sql2 = "Select x From Something x.age = :age";
+
+        final AnnotationImp namedQuery1 = new AnnotationImp(NamedQuery.class);
+        namedQuery1.property("name", name1).property("query", sql1);
+
+        final AnnotationImp namedQuery2 = new AnnotationImp(NamedQuery.class);
+        namedQuery2.property("name", name2).property("query", sql2);
+
+        final IAnnotationReader[] arrayQueries = { namedQuery1, namedQuery2 };
+
+        final IClassWriter mock = ClassMock.of(this.getClassName());
+        mock.annotation(NamedQueries.class)
+                        .property(arrayQueries)
+                        .and()
+                        .annotation(Entity.class)
+                        .and()
+                        .annotation(Table.class)
+                        .property("schema", schemaName)
+                        .property("name", tableName);
+
+        final Class<?> clazz = mock.build();
+        final Table table = clazz.getAnnotation(Table.class);
+
+        Assert.assertTrue(clazz.isAnnotationPresent(Entity.class));
+        Assert.assertEquals(table.schema(), schemaName);
+        Assert.assertEquals(table.name(), tableName);
+
+        for (final NamedQuery namedQuery : clazz.getAnnotation(NamedQueries.class).value()) {
+
+            if (name1.equals(namedQuery.name())) {
+                Assert.assertEquals(namedQuery.query(), sql1);
+            } else if (name2.equals(namedQuery.name())) {
+                Assert.assertEquals(namedQuery.query(), sql2);
+            }
+        }
+    }
+
+    @Test
+    public void createClassWithStaticFields() {
+
+        final IClassWriter mock = ClassMock.of(this.getClassName());
+        mock.field("name", String.class)
+                        .value("NAME")
+                        .modifiers(ModifierEnum.STATIC)
+                        .visibility(VisibilityEnum.PRIVATE);
+        mock.field("api", float.class)
+                        .value(1.1F)
+                        .modifiers(ModifierEnum.STATIC)
+                        .visibility(VisibilityEnum.PUBLIC);
+        mock.field("serialVersionUID", long.class)
+                        .value(123456789L)
+                        .modifiers(ModifierEnum.STATIC)
+                        .visibility(VisibilityEnum.PUBLIC);
+
+        for (final Field field : mock.build().getDeclaredFields()) {
+
+            Assert.assertTrue(Modifier.isStatic(field.getModifiers()));
+        }
+    }
+
+    @Test
+    public void createClassWithInstanceFields() {
+
+        final IClassWriter mock = ClassMock.of(this.getClassName());
+        mock.field("api", Float.class);
+        mock.field("version", String.class);
+
+        for (final Field field : mock.build().getDeclaredFields()) {
+
+            Assert.assertFalse(Modifier.isStatic(field.getModifiers()));
+        }
+    }
+
+    @Test
+    public void createClassWithInstanceFieldWithAnnotations() {
+
+        final IClassWriter mock = ClassMock.of(this.getClassName());
+        mock.field("visibility", Date.class).annotation(Column.class)
+                        .property("name", "EN_VISIBILITY")
+                        .property("nullable", true)
+                        .and()
+                        .annotation(Enumerated.class)
+                        .property(EnumType.STRING);
+
+        mock.field("birthDay", Date.class).annotation(Column.class)
+                        .property("name", "DT_BIRTHDAY")
+                        .property("nullable", true)
+                        .and()
+                        .annotation(Temporal.class)
+                        .property(TemporalType.TIMESTAMP);
+
+        mock.field("name", String.class)
+                        .annotation(Column.class)
+                        .property("name", "TX_NAME");
+
+        mock.field("age", Integer.class)
+                        .annotation(Column.class)
+                        .property("name", "NU_AGE")
+                        .property("nullable", false);
+
+        for (final Field field : mock.build().getDeclaredFields()) {
+
+            final Column column = field.getAnnotation(Column.class);
+            Assert.assertNotNull(column);
+
+            if ("name".equals(field.getName())) {
+
+                Assert.assertEquals(column.name(), "TX_NAME");
+                Assert.assertEquals(column.nullable(), true);
+
+            } else if ("age".equals(field.getName())) {
+
+                Assert.assertEquals(column.name(), "NU_AGE");
+                Assert.assertEquals(column.nullable(), false);
+
+            } else if ("visibility".equals(field.getName())) {
+
+                Assert.assertEquals(column.name(), "EN_VISIBILITY");
+                Assert.assertEquals(column.nullable(), true);
+
+            } else {
+
+                Assert.assertEquals(column.name(), "DT_BIRTHDAY");
+                Assert.assertEquals(column.nullable(), true);
+            }
+        }
+    }
+
+    @Test
+    public void createClassWithInstanceFieldWithGetter() {
+
+        final IClassWriter mock = ClassMock.of(this.getClassName());
+        mock.field("name", String.class).hasSetter(false);
+
+        for (final Method method : mock.build().getDeclaredMethods()) {
+
+            Assert.assertEquals(method.getName(), "getName");
+        }
+    }
+
+    @Test
+    public void createClassWithInstanceFieldWithSetter() {
+
+        final IClassWriter mock = ClassMock.of(this.getClassName());
+        mock.field("name", String.class).hasGetter(false);
+
+        for (final Method method : mock.build().getDeclaredMethods()) {
+
+            Assert.assertEquals(method.getName(), "setName");
+        }
+    }
+
+    @Test
+    public void createClassWithInstanceFieldWithGetterSetter() {
+
+        final IClassWriter mock = ClassMock.of(this.getClassName());
+        mock.field("name", String.class);
+
+        for (final Method method : mock.build().getDeclaredMethods()) {
+
+            if ("getName".equals(method.getName())) {
+                Assert.assertEquals(method.getName(), "getName");
+            } else {
+                Assert.assertEquals(method.getName(), "setName");
+            }
+        }
+    }
+
+    @Test
+    public void createClassWithMethods() {
+
+        final IClassWriter mock = ClassMock.of(this.getClassName());
+        mock.method("testIt")
+                        .returnType(void.class)
+                        .exceptions(Exception.class)
+                        .annotation(Override.class);
+
+        for (final Method method : mock.build().getDeclaredMethods()) {
+
+            Assert.assertEquals(method.getName(), "testIt");
+        }
+    }
+
+    @Test
+    public void createClassWithMethodReader() {
+
+        final MethodImp reader = new MethodImp("testIt");
+        reader.returnType(void.class)
+                        .exceptions(Exception.class)
+                        .annotation(Override.class)
+                        .and()
+                        .annotation(Override.class);
+        reader.parameter("param1", String.class)
+                        .annotation(Override.class)
+                        .and()
+                        .annotation(Override.class);
+        reader.parameter("param2", String.class)
+                        .annotation(Override.class)
+                        .and()
+                        .annotation(Override.class);
+
+        final IClassWriter mock = ClassMock.of(this.getClassName());
+        mock.method(reader);
+
+        for (final Method method : mock.build().getDeclaredMethods()) {
+
+            Assert.assertEquals(method.getName(), "testIt");
+        }
+    }
+
+    @Test
+    public void createClassWithOneGeneric() {
+
+        final int posicaoGenerics = 0;
+
+        final IClassWriter mock = ClassMock.of(this.getClassName());
+        mock.superclass(ModelOld.class).generics(String.class);
+
+        final Class<?> clazz = mock.build();
+        final ParameterizedType parametrizedType = (ParameterizedType) clazz.getGenericSuperclass();
+        final Type type = parametrizedType.getActualTypeArguments()[posicaoGenerics];
+
+        Assert.assertTrue(String.class.isAssignableFrom((Class<?>) type));
+    }
+
+    @Test
+    public void createClassWithTwoGeneric() {
+
+        final int posicaoGenericsZero = 0;
+        final int posicaoGenericsOne = 1;
+
+        final IClassWriter mock = ClassMock.of(this.getClassName());
+        mock.superclass(ModelNew.class).generics(String.class).generics(Integer.class);
+
+        final Class<?> clazz = mock.build();
+        final ParameterizedType parametrizedType = (ParameterizedType) clazz.getGenericSuperclass();
+
+        final Type type0 = parametrizedType.getActualTypeArguments()[posicaoGenericsZero];
+        final Type type1 = parametrizedType.getActualTypeArguments()[posicaoGenericsOne];
+
+        Assert.assertTrue(String.class.isAssignableFrom((Class<?>) type0));
+        Assert.assertTrue(Integer.class.isAssignableFrom((Class<?>) type1));
+    }
+
+    private String getClassName() {
+
+        return this.className + "_" + TesteClassMock.counter++;
+    }
+}
