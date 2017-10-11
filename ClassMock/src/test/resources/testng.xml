@@ -1,0 +1,11 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite
+	name="ClassMock"
+	verbose="1">
+
+	<test name="all">
+		<packages>
+			<package name="net.sf.esfinge.classmock.example.*" />
+		</packages>
+	</test>
+</suite>
