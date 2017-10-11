@@ -1,25 +1,18 @@
 package net.sf.esfinge.classmock.example.basic;
-import java.lang.reflect.Method;
+
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 import net.sf.esfinge.classmock.ClassMock;
-
+import net.sf.esfinge.classmock.api.IClassWriter;
 
 public class GenerateInterface {
 
-	public static void main(String[] args) {
-		ClassMock mockInterf = new ClassMock("MinhaInterface",true);
-		
-		mockInterf.addInterface(Comparable.class)
-		   .addMethod(String.class, "execute");
-		
-		Class classe = mockInterf.createClass();
-		
-		System.out.println("É interface? "+classe.isInterface());
-		
-		for(Method m : classe.getMethods()){
-			System.out.println(m.getName());
-		}
+    @Test
+    public void isInterface() {
 
-	}
+        final IClassWriter mock = ClassMock.of(FactoryIt.getName()).asInterface();
 
+        Assert.assertTrue(mock.build().isInterface());
+    }
 }

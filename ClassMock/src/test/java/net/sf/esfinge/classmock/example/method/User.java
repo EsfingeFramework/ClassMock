@@ -1,30 +1,35 @@
 package net.sf.esfinge.classmock.example.method;
 
 public class User {
-	
-	private String roleName;
-	private String userName;
-	
-	public User(String userName, String roleName) {
-		super();
-		this.userName = userName;
-		this.roleName = roleName;
-	}
 
-	public String getUserName() {
-		return userName;
-	}
+    private String roleName;
 
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
+    private String userName;
 
-	public String getRoleName() {
-		return roleName;
-	}
+    public User(final String userName, final String roleName) {
 
-	public void setRoleName(String roleName) {
-		this.roleName = roleName;
-	}
+        super();
+        this.userName = userName;
+        this.roleName = roleName;
+    }
 
+    public String getUserName() {
+
+        return this.userName;
+    }
+
+    public void setUserName(final String userName) {
+
+        this.userName = userName;
+    }
+
+    public String getRoleName() {
+
+        return this.roleName;
+    }
+
+    public void setRoleName(final String roleName) {
+
+        this.roleName = roleName;
+    }
 }

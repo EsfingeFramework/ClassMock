@@ -1,97 +1,134 @@
 package net.sf.esfinge.classmock.example.basic;
-import java.lang.annotation.Annotation;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Arrays;
+import java.lang.reflect.Parameter;
 
-import org.objectweb.asm.Type;
+import org.testng.Assert;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
 
 import net.sf.esfinge.classmock.ClassMock;
-import net.sf.esfinge.classmock.ClassMockUtils;
-import net.sf.esfinge.classmock.Location;
-
+import net.sf.esfinge.classmock.api.IAnnotationReader;
+import net.sf.esfinge.classmock.api.IClassWriter;
+import net.sf.esfinge.classmock.api.IMethodReader;
+import net.sf.esfinge.classmock.api.IMethodWriter;
+import net.sf.esfinge.classmock.api.enums.LocationEnum;
+import net.sf.esfinge.classmock.imp.AnnotationImp;
+import net.sf.esfinge.classmock.imp.MethodImp;
 
 public class TesteGeneration {
 
+    private Class<?> classe;
 
-	public static void main(String[] args) throws InstantiationException, IllegalAccessException {
-		System.out.println(Type.getType(Object.class).getInternalName());
-		ClassMock mock = new ClassMock("Mock");	
-		mock.setSuperclass(Superclasse.class)
-		    .addInterface(Interface.class)
-		    //.addInterface(Comparable.class)
-		    .addAnnotation(Label.class,"Crasse")
-		    .addProperty("nome", String.class)
-		    .addAnnotation("nome", Teste.class,Location.GETTER,"teste")
-		    .addAnnotationProperty("nome", Teste.class, "valor", 23)
-		    .addAnnotationProperty("nome", Teste.class, "array", new String[]{"A","B","C"})
-		    .addAnnotationProperty("nome", Teste.class, "enumeration", TesteEnum.TESTE2)
-	        .addAnnotationProperty("nome", Teste.class, "label",new net.sf.esfinge.classmock.Annotation(Label.class,"1"))
-	        .addAnnotationProperty("nome", Teste.class, "classe", ClassMock.class)
-	        .addAnnotationProperty("nome", Teste.class, "labels",
-	        		new net.sf.esfinge.classmock.Annotation[]{
-	        	     new net.sf.esfinge.classmock.Annotation(Label.class,"A"),
-	        	     new net.sf.esfinge.classmock.Annotation(Label.class,"B")
-	        	    })
-		    .addProperty("idade", long.class)
-		    .addMethod(String.class, "testar", int.class, int.class)
-		    .addMethodAnnotation("testar", Teste.class,"OK")
-		    .addMethodAnnotationProperty("testar", Teste.class, "array", new String[]{"12","34"})
-		    .addMethodParamAnnotation(0, "testar", Domain.class, "domain")
-		    .addMethodParamAnnotationProperty(0, "testar", Domain.class, "outra", 23);
-		
-		Class classe = mock.createClass();
-		
-		classe.newInstance();
-		
-		System.out.println("Superclasse: "+classe.getSuperclass().getName());
-		
-		for(Class interf : classe.getInterfaces()){
-			System.out.println("Interface: "+interf.getName());
-		}
-		
-		for(Annotation a : classe.getAnnotations()){
-			System.out.println("   "+a.annotationType());
-			if(a.annotationType() == Label.class){
-				System.out.println("   value="+((Label)a).value());
-			}
-		}
-		System.out.println("--------");
-		for(Method m : classe.getMethods()){
-			System.out.println(m.getName());
-			for(Annotation a : m.getAnnotations()){
-				System.out.println("   "+a.annotationType());
-				if(a.annotationType() == Teste.class){
-					System.out.println("   valor="+((Teste)a).valor());
-					System.out.println("   value="+((Teste)a).value());
-					System.out.println("   enumeration="+((Teste)a).enumeration());
-					System.out.println("   array="+Arrays.toString(((Teste)a).array()));
-					System.out.println("   label="+((Teste)a).label().value());
-					System.out.println("   classe="+((Teste)a).classe().toString());
-					System.out.println("   labels=");
-					for(Label l : ((Teste)a).labels()){
-						System.out.println("      @Label("+l.value()+")");
-					}
-				}
-			}
-			for (int i = 0; i < m.getParameterTypes().length; i++) {
-				for (int j = 0; j < m.getParameterAnnotations()[i].length; j++) {
-					System.out.println("      Param "+i+" annotation @"+m.getParameterAnnotations()[i][j].annotationType().getName());
-					if(m.getParameterAnnotations()[i][j].annotationType() == Domain.class){
-						System.out.println("      value="+((Domain)m.getParameterAnnotations()[i][j]).value());
-						System.out.println("      outra="+((Domain)m.getParameterAnnotations()[i][j]).outra());
-					}
-				}
-			}
-		}
-		System.out.println("--------");
-		for(Field f : classe.getDeclaredFields()){
-			System.out.println(f.getType() +" "+ f.getName());
-			for(Annotation a : f.getAnnotations()){
-				System.out.println(a.annotationType());
-			}
-		}
+    @BeforeTest
+    private void setUp() {
 
-	}
+        final AnnotationImp label1 = new AnnotationImp(Label.class);
+        label1.property("1");
 
+        final AnnotationImp label2 = new AnnotationImp(Label.class);
+        label2.property("2");
+
+        final IAnnotationReader[] arrayLabels = { label1, label2 };
+
+        final IMethodWriter method = new MethodImp("testar");
+        method.annotation(Teste.class)
+                        .property("OK")
+                        .property("array", new String[] { "12", "34" });
+        method.returnType(String.class);
+        method.parameter("op1", int.class)
+                        .annotation(Domain.class)
+                        .property("domain")
+                        .property("outra", 23);
+        method.parameter("op2", int.class);
+
+        final IClassWriter mock = ClassMock.of(FactoryIt.getName());
+        mock.superclass(Superclasse.class);
+        mock.interfaces(Interface.class);
+        mock.annotation(Label.class).property("Crasse");
+        mock.field("idade", long.class);
+        mock.field("nome", String.class)
+                        .annotation(Teste.class, LocationEnum.GETTER)
+                        .property("teste")
+                        .property("valor", 23)
+                        .property("array", new String[] { "A", "B", "C" })
+                        .property("enumeration", TesteEnum.TESTE2)
+                        .property("classe", ClassMock.class)
+                        .property("label", label1)
+                        .property("labels", arrayLabels);
+
+        mock.method((IMethodReader) method);
+        this.classe = mock.build();
+    }
+
+    @Test
+    public void generationClass() {
+
+        Assert.assertEquals(Superclasse.class, this.classe.getSuperclass());
+        Assert.assertEquals("Crasse", this.classe.getAnnotation(Label.class).value());
+
+        for (final Class<?> interf : this.classe.getInterfaces()) {
+
+            Assert.assertEquals(Interface.class, interf);
+        }
+
+    }
+
+    @Test
+    public void generationField() {
+
+        for (final Field f : this.classe.getDeclaredFields()) {
+
+            if ("nome".equals(f.getName())) {
+
+                final Teste teste = f.getAnnotation(Teste.class);
+                Assert.assertEquals(teste.value(), "teste");
+                Assert.assertEquals(teste.valor(), 23);
+                Assert.assertEquals(teste.array(), new String[] { "A", "B", "C" });
+                Assert.assertEquals(teste.enumeration(), TesteEnum.TESTE2);
+                Assert.assertEquals(teste.classe(), ClassMock.class);
+                Assert.assertEquals(teste.label().value(), "1");
+
+                final Label[] labels = teste.labels();
+                Assert.assertEquals(labels[0].value(), "1");
+                Assert.assertEquals(labels[1].value(), "2");
+            }
+        }
+    }
+
+    @Test
+    public void generationMethod() {
+
+        for (final Method m : this.classe.getMethods()) {
+
+            if ("testar".equals(m.getName())) {
+
+                // Annotation
+                final Teste methodAnnotation = m.getAnnotation(Teste.class);
+                Assert.assertEquals(methodAnnotation.value(), "OK");
+                Assert.assertEquals(methodAnnotation.array(), new String[] { "12", "34" });
+
+                // Return type
+                Assert.assertEquals(m.getReturnType(), String.class);
+
+                // Parameters
+                for (final Parameter parameter : m.getParameters()) {
+
+                    if ("arg0".equals(parameter.getName())) {
+
+                        final Domain domain = parameter.getAnnotation(Domain.class);
+                        Assert.assertEquals(domain.value(), "domain");
+                        Assert.assertEquals(domain.outra(), 23);
+                        Assert.assertEquals(int.class, parameter.getType());
+
+                    } else {
+
+                        Assert.assertEquals("arg1", parameter.getName());
+                        Assert.assertEquals(int.class, parameter.getType());
+                    }
+                }
+            }
+        }
+    }
 }

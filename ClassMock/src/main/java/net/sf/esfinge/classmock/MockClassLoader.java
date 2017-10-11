@@ -1,17 +1,31 @@
 package net.sf.esfinge.classmock;
 
-public class MockClassLoader extends ClassLoader {
-	
-	private static MockClassLoader instance;
-	
-	public static MockClassLoader getInstance() {
-		if(instance == null)
-			instance = new MockClassLoader();
-		return instance;
-	}
+class MockClassLoader extends ClassLoader {
 
-	public Class defineClass(String name, byte[] b){
-		return defineClass(name, b, 0, b.length);
-	}
+    private static MockClassLoader instance;
 
+    /**
+     * @return singleton
+     */
+    public static MockClassLoader getInstance() {
+
+        if (MockClassLoader.instance == null) {
+
+            MockClassLoader.instance = new MockClassLoader();
+        }
+
+        return MockClassLoader.instance;
+    }
+
+    /**
+     * @param name
+     *            of the entity
+     * @param b
+     *            the data
+     * @return class built
+     */
+    public Class<?> defineClass(final String name, final byte[] b) {
+
+        return this.defineClass(name, b, 0, b.length);
+    }
 }
