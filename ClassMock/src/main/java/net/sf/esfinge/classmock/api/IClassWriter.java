@@ -28,6 +28,20 @@ public interface IClassWriter extends IAnnotationWriter {
     IClassWriter asAbstract();
 
     /**
+     * Set the output as a enum class
+     *
+     * @return IClassWriter
+     */
+    IClassWriter asEnum();
+
+    /**
+     * Set the output as a annotation class
+     *
+     * @return IClassWriter
+     */
+    IClassWriter asAnnotation();
+
+    /**
      *
      * @param javaEnum
      *            the version of java entity
