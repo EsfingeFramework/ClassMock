@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 import net.sf.esfinge.classmock.api.IAnnotationPropertyWriter;
 import net.sf.esfinge.classmock.api.IAnnotationReader;
@@ -44,7 +44,7 @@ public class ClassMock implements IClassReader, IClassWriter {
 
     private final List<IAnnotationReader> annotations = new ArrayList<>();
 
-    private final Set<IFieldReader> fields = new TreeSet<>();
+    private final Set<IFieldReader> fields = new LinkedHashSet<>();
 
     private final Set<IMethodReader> methods = new HashSet<>();
 
@@ -68,9 +68,11 @@ public class ClassMock implements IClassReader, IClassWriter {
     @Override
     public IClassWriter asClass() {
 
-        this.modifiers.remove(ModifierEnum.ABSTRACT);
-        this.modifiers.remove(ModifierEnum.INTERFACE);
+        this.modifiers.clear();
         this.modifiers.add(ModifierEnum.SUPER);
+
+        this.superclass(Object.class);
+        this.interfaces().remove(Annotation.class);
 
         return this;
     }
@@ -78,9 +80,12 @@ public class ClassMock implements IClassReader, IClassWriter {
     @Override
     public IClassWriter asInterface() {
 
-        this.modifiers.remove(ModifierEnum.SUPER);
+        this.modifiers.clear();
         this.modifiers.add(ModifierEnum.ABSTRACT);
         this.modifiers.add(ModifierEnum.INTERFACE);
+
+        this.superclass(Object.class);
+        this.interfaces().remove(Annotation.class);
 
         return this;
     }
@@ -88,9 +93,40 @@ public class ClassMock implements IClassReader, IClassWriter {
     @Override
     public IClassWriter asAbstract() {
 
-        this.modifiers.remove(ModifierEnum.INTERFACE);
+        this.modifiers.clear();
         this.modifiers.add(ModifierEnum.ABSTRACT);
         this.modifiers.add(ModifierEnum.SUPER);
+
+        this.superclass(Object.class);
+        this.interfaces().remove(Annotation.class);
+
+        return this;
+    }
+
+    @Override
+    public IClassWriter asEnum() {
+
+        this.modifiers.clear();
+        this.modifiers.add(ModifierEnum.FINAL);
+        this.modifiers.add(ModifierEnum.SUPER);
+        this.modifiers.add(ModifierEnum.ENUM);
+
+        this.superclass(Enum.class);
+        this.interfaces().remove(Annotation.class);
+
+        return this;
+    }
+
+    @Override
+    public IClassWriter asAnnotation() {
+
+        this.modifiers.clear();
+        this.modifiers.add(ModifierEnum.ANNOTATION);
+        this.modifiers.add(ModifierEnum.ABSTRACT);
+        this.modifiers.add(ModifierEnum.INTERFACE);
+
+        this.superclass(Object.class);
+        this.interfaces(Annotation.class);
 
         return this;
     }
@@ -196,29 +232,33 @@ public class ClassMock implements IClassReader, IClassWriter {
     @Override
     public boolean isClass() {
 
-        this.modifiers.remove(ModifierEnum.ABSTRACT);
-        this.modifiers.remove(ModifierEnum.INTERFACE);
-        this.modifiers.add(ModifierEnum.SUPER);
-
         return !this.modifiers.contains(ModifierEnum.ABSTRACT)
-                        && !this.modifiers.contains(ModifierEnum.INTERFACE)
                         && this.modifiers.contains(ModifierEnum.SUPER);
     }
 
     @Override
     public boolean isInterface() {
 
-        return !this.modifiers.contains(ModifierEnum.SUPER)
-                        && this.modifiers.contains(ModifierEnum.ABSTRACT)
-                        && this.modifiers.contains(ModifierEnum.INTERFACE);
+        return this.modifiers.contains(ModifierEnum.INTERFACE);
     }
 
     @Override
     public boolean isAbstract() {
 
-        return !this.modifiers.contains(ModifierEnum.INTERFACE)
-                        && this.modifiers.contains(ModifierEnum.ABSTRACT)
+        return this.modifiers.contains(ModifierEnum.ABSTRACT)
                         && this.modifiers.contains(ModifierEnum.SUPER);
+    }
+
+    @Override
+    public boolean isEnum() {
+
+        return this.modifiers.contains(ModifierEnum.ENUM);
+    }
+
+    @Override
+    public boolean isAnnotation() {
+
+        return this.modifiers.contains(ModifierEnum.ANNOTATION);
     }
 
     @Override

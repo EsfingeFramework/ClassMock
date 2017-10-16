@@ -7,18 +7,20 @@ ClassMock is a framework that helps the creation of unit tests for components th
 ## 2.	Features
 The ClassMock framework has a very intuitive API that allows you to:
 
-01. create dynamic interface;
-02. create dynamic abstract class;
-03. create dynamic concrete class;
-04. Add a superclass;
-05. Add interfaces;
-06. Add instance fields;
-07. Add static fields;
-08. Set java version;
-09. Set visibility (PRIVATE, PUBLIC, PROTECTED);
-10. Set modifiers (VOLATILE, STATIC, FINAL, SYNCHRONIZED...);
-11. Apply annotations;
-12. Apply generic at superclass; 
+01. create dynamic Annotation;
+02. create dynamic Enum;
+03. create dynamic Interface;
+04. create dynamic Abstract Class;
+05. create dynamic Concrete Class;
+06. Add a superclass;
+07. Add interfaces;
+08. Add instance fields;
+09. Add static fields;
+10. Set java version;
+11. Set visibility (PRIVATE, PUBLIC, PROTECTED);
+12. Set modifiers (VOLATILE, STATIC, FINAL, SYNCHRONIZED...);
+13. Apply annotations;
+14. Apply generic at superclass; 
 
 ## 3.	Install
 
@@ -55,14 +57,20 @@ Class<?> yourClass = ClassMock.of("my.pack.org.fake.domain.YoursUniqueDynamicCla
 Creating a class or interface.
 
 ```java
-// Create a concrete class
+// Create a Concrete Class
 final Class<?> clazz = ClassMock.of("MyEspecialClass").build();
 
-// Create an abstract class
+// Create an Abstract Class
 final Class<?> absClazz = ClassMock.of("AbstractMyEspecialClass").asAbstract.build();
 
-// Create an interface
+// Create an Interface
 final Class<?> interf = ClassMock.of("IMyEspecialClass").asInterface.build();
+
+// Create an Annotaion
+final Class<?> annotation = ClassMock.of("MyEspecialAnnotationClass").asAnnotation.build();
+
+// Create an Enum
+final Class<?> annotation = ClassMock.of("MyEspecialAnnotationClass").asAnnotation.build();
 ```
 
 ### 4.1 One minute tutorial:
@@ -102,5 +110,53 @@ mock.field("total", Float.class)
 Class<?> jpaClazz = ClassMock.of("MyEspecialClass").build();
 Object instance = clazz.newInstance();
 ```
+
+### 4.2 Enum tutorial:
+
+A simple example of Enum.
+
+```java
+final IClassWriter mock = ClassMock.of(this.getClassName()).asEnum();
+
+Arrays.asList("BMW", "BENTLEY", "PORSCHE", "CADILLAC", "LEXUS", "FERRARI", "MERCEDES", "FORD")
+            .forEach(car -> {
+
+                mock.field(car, Enum.class)
+                                .hasGetter(false)
+                                .hasSetter(false)
+                                .visibility(VisibilityEnum.PUBLIC)
+                                .modifiers(ModifierEnum.FINAL, ModifierEnum.STATIC, ModifierEnum.ENUM);
+            });
+
+final Class<?> clazz = mock.build();
+final Object[] enumConstants = clazz.getEnumConstants();
+```
+
+### 4.3 Annotation tutorial:
+
+A simple example of Annotation.
+
+```java
+final IClassWriter mock = ClassMock.of(this.getClassName()).asAnnotation();
+mock.method("alias")
+                .returnType(String.class)
+                .visibility(VisibilityEnum.PUBLIC)
+                .modifiers(ModifierEnum.ABSTRACT);
+mock.method("query")
+                .returnType(String.class)
+                .visibility(VisibilityEnum.PUBLIC)
+                .modifiers(ModifierEnum.ABSTRACT);
+mock.method("active")
+                .returnType(Boolean.class)
+                .visibility(VisibilityEnum.PUBLIC)
+                .modifiers(ModifierEnum.ABSTRACT)
+                .value(Boolean.TRUE); // default value for this property
+
+final Class<?> annotation = mock.build();
+```
+
+### 4.4 More tutorials:
+
+See our tests section in the project.
 
 ### [MIT Licensed](LICENSE)
