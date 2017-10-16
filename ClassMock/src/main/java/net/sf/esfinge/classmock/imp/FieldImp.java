@@ -199,6 +199,13 @@ public class FieldImp implements IFieldReader, IFieldWriter, Comparable<FieldImp
     @Override
     public String toString() {
 
-        return this.type().getSimpleName() + " " + this.name();
+        final StringBuilder sb = new StringBuilder();
+
+        sb.append("(");
+        sb.append((this.type() == null) ? "No Type" : this.type().getSimpleName());
+        sb.append(") ");
+        sb.append(this.name());
+
+        return sb.toString();
     }
 }
