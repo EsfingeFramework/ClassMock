@@ -41,4 +41,11 @@ public interface IMethodReader {
      * @return collection of exceptions
      */
     Collection<Class<?>> exceptions();
+
+    /**
+     * Only for annotation
+     * 
+     * @return value
+     */
+    Object value();
 }

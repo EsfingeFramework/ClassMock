@@ -21,6 +21,8 @@ public class MethodImp implements IMethodReader, IMethodWriter, Comparable<Metho
 
     private String name;
 
+    private Object value;
+
     private Class<?> returnType = void.class;
 
     private VisibilityEnum visibility = VisibilityEnum.PUBLIC;
@@ -172,6 +174,20 @@ public class MethodImp implements IMethodReader, IMethodWriter, Comparable<Metho
     public Collection<Class<?>> exceptions() {
 
         return this.exceptions;
+    }
+
+    @Override
+    public IMethodWriter value(final Object value) {
+
+        this.value = value;
+
+        return this;
+    }
+
+    @Override
+    public Object value() {
+
+        return this.value;
     }
 
     @Override

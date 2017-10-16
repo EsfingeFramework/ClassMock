@@ -41,6 +41,14 @@ public interface IMethodWriter extends IAnnotationWriter {
     IMethodWriter exceptions(Class<?>... exceptions);
 
     /**
+     *
+     * @param value
+     *            to be default (annotations only)
+     * @return IFieldWriter
+     */
+    IMethodWriter value(Object value);
+
+    /**
      * @param name
      *            of the parameter
      * @param type
