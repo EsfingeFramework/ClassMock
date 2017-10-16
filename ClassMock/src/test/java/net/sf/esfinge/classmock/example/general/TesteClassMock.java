@@ -66,7 +66,7 @@ public class TesteClassMock {
     }
 
     @Test
-    public void createAbstract() {
+    public void createAbstractClass() {
 
         final Class<?> clazz = ClassMock.of(this.getClassName()).asAbstract().build();
 
@@ -74,7 +74,131 @@ public class TesteClassMock {
     }
 
     @Test
-    public void createClass() {
+    public void createEnumClass() {
+
+        final Class<?> clazz = ClassMock.of(this.getClassName()).asEnum().build();
+
+        Assert.assertTrue(clazz.isEnum());
+    }
+
+    @Test
+    public void createAnnotationClass() {
+
+        final Class<?> clazz = ClassMock.of(this.getClassName()).asAnnotation().build();
+
+        Assert.assertTrue(clazz.isAnnotation());
+    }
+
+    @Test
+    public void createAnnotationWithProperties() throws NoSuchMethodException, SecurityException {
+
+        final IClassWriter mock = ClassMock.of(this.getClassName()).asAnnotation();
+        mock.method("alias")
+                        .returnType(String.class)
+                        .visibility(VisibilityEnum.PUBLIC)
+                        .modifiers(ModifierEnum.ABSTRACT);
+        mock.method("query")
+                        .returnType(String.class)
+                        .visibility(VisibilityEnum.PUBLIC)
+                        .modifiers(ModifierEnum.ABSTRACT);
+        mock.method("active")
+                        .returnType(Boolean.class)
+                        .visibility(VisibilityEnum.PUBLIC)
+                        .modifiers(ModifierEnum.ABSTRACT)
+                        .value(Boolean.TRUE); // default value
+
+        final Class<?> clazz = mock.build();
+
+        Assert.assertNotNull(clazz.getDeclaredMethod("alias"));
+        Assert.assertNotNull(clazz.getDeclaredMethod("query"));
+        Assert.assertNotNull(clazz.getDeclaredMethod("active"));
+        Assert.assertEquals(clazz.getDeclaredMethod("active").getDefaultValue(), Boolean.TRUE);
+    }
+
+    @Test
+    public void createEnumClassWithContansts() {
+
+        int counter = -1;
+        final List<String> cars = Arrays.asList("BMW", "BENTLEY", "PORSCHE",
+                        "CADILLAC", "LEXUS", "FERRARI", "MERCEDES", "FORD");
+
+        // Test an enum creation by different number of constants
+        while (counter < cars.size()) {
+
+            counter++;
+            final IClassWriter mock = ClassMock.of(this.getClassName()).asEnum();
+
+            for (int i = 0; i < counter; i++) {
+
+                final String car = cars.get(i);
+                mock.field(car, Enum.class)
+                                .hasGetter(false)
+                                .hasSetter(false)
+                                .visibility(VisibilityEnum.PUBLIC)
+                                .modifiers(ModifierEnum.FINAL, ModifierEnum.STATIC, ModifierEnum.ENUM);
+            }
+
+            final Class<?> clazz = mock.build();
+            final Object[] enumConstants = clazz.getEnumConstants();
+
+            // Valid size
+            Assert.assertEquals(enumConstants.length, counter);
+
+            for (int i = 0; i < enumConstants.length; i++) {
+
+                // Valid name
+                Assert.assertEquals(enumConstants[i].toString(), cars.get(i));
+            }
+        }
+    }
+
+    @Test
+    public void createEnumClassWithContanstsAndFields() throws NoSuchFieldException, SecurityException {
+
+        int counter = -1;
+        final List<String> cars = Arrays.asList("BMW", "BENTLEY", "PORSCHE",
+                        "CADILLAC", "LEXUS", "FERRARI", "MERCEDES", "FORD");
+
+        // Test an enum creation by different number of constants
+        while (counter < cars.size()) {
+
+            counter++;
+            final IClassWriter mock = ClassMock.of(this.getClassName()).asEnum();
+
+            for (int i = 0; i < counter; i++) {
+
+                final String car = cars.get(i);
+                mock.field(car, Enum.class)
+                                .hasGetter(false)
+                                .hasSetter(false)
+                                .visibility(VisibilityEnum.PUBLIC)
+                                .modifiers(ModifierEnum.FINAL, ModifierEnum.STATIC, ModifierEnum.ENUM);
+            }
+
+            mock.field("cylinder", Integer.class);
+            mock.field("valve", Integer.class);
+            mock.field("horsePower", Float.class);
+
+            final Class<?> clazz = mock.build();
+            final Object[] enumConstants = clazz.getEnumConstants();
+
+            // Valid size
+            Assert.assertEquals(enumConstants.length, counter);
+
+            for (int i = 0; i < enumConstants.length; i++) {
+
+                // Valid name
+                Assert.assertEquals(enumConstants[i].toString(), cars.get(i));
+            }
+
+            Assert.assertNotNull(clazz.getDeclaredField("cylinder"));
+            Assert.assertNotNull(clazz.getDeclaredField("valve"));
+            Assert.assertNotNull(clazz.getDeclaredField("horsePower"));
+        }
+    }
+
+    @Test
+    public void createConcreteClass() {
 
         final String name = this.getClassName();
         final Class<?> clazz = ClassMock.of(name).build();
@@ -181,8 +305,11 @@ public class TesteClassMock {
         for (final NamedQuery namedQuery : clazz.getAnnotation(NamedQueries.class).value()) {
 
             if (name1.equals(namedQuery.name())) {
+
                 Assert.assertEquals(namedQuery.query(), sql1);
+
             } else if (name2.equals(namedQuery.name())) {
+
                 Assert.assertEquals(namedQuery.query(), sql2);
             }
         }
