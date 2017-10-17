@@ -7,7 +7,7 @@ import net.sf.esfinge.classmock.api.enums.VisibilityEnum;
 public interface IClassWriter extends IAnnotationWriter {
 
     /**
-     * Set the output as a regular class
+     * Set the output as a concrete class and it is the default.
      *
      * @return IClassWriter
      */
@@ -108,7 +108,7 @@ public interface IClassWriter extends IAnnotationWriter {
     IMethodWriter method(IMethodReader method);
 
     /**
-     * @return the entity builded
+     * @return the entity created
      */
     Class<?> build();
 }
