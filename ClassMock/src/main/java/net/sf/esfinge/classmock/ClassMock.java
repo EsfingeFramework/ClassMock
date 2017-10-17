@@ -233,13 +233,15 @@ public class ClassMock implements IClassReader, IClassWriter {
     public boolean isClass() {
 
         return !this.modifiers.contains(ModifierEnum.ABSTRACT)
+                        && !this.modifiers.contains(ModifierEnum.ENUM)
                         && this.modifiers.contains(ModifierEnum.SUPER);
     }
 
     @Override
     public boolean isInterface() {
 
-        return this.modifiers.contains(ModifierEnum.INTERFACE);
+        return this.modifiers.contains(ModifierEnum.INTERFACE)
+                        && !this.modifiers.contains(ModifierEnum.ANNOTATION);
     }
 
     @Override
