@@ -18,7 +18,7 @@ public class AuthorizationProxyTest {
 
         final IClassWriter classMock = ClassMock.of("DummyInterface").asInterface();
         classMock.method("execute")
-                        .returnType(void.class)
+                        .returnTypeAsVoid()
                         .modifiers(ModifierEnum.ABSTRACT)
                         .annotation(AuthorizedRoles.class)
                         .property(new String[] { "admin" });

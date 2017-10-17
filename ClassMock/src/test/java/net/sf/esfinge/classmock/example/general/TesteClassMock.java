@@ -555,7 +555,7 @@ public class TesteClassMock {
 
         final IClassWriter mock = ClassMock.of(FactoryIt.getName());
         mock.method("testIt")
-                        .returnType(void.class)
+                        .returnTypeAsVoid()
                         .exceptions(Exception.class)
                         .annotation(Override.class);
 
