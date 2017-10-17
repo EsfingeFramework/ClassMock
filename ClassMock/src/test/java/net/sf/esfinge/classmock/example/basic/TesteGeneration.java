@@ -72,7 +72,6 @@ public class TesteGeneration {
 
             Assert.assertEquals(Interface.class, interf);
         }
-
     }
 
     @Test
