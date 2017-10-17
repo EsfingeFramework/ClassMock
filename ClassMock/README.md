@@ -20,7 +20,7 @@ The ClassMock framework has a very intuitive API that allows you to:
 11. Set visibility (PRIVATE, PUBLIC, PROTECTED);
 12. Set modifiers (VOLATILE, STATIC, FINAL, SYNCHRONIZED...);
 13. Apply annotations;
-14. Apply generic at superclass; 
+14. Apply generics at superclass; 
 
 ## 3.	Install
 
@@ -32,11 +32,11 @@ Add in your pom.xml file
 <dependency>
   <groupId>net.sf.esfinge</groupId>
   <artifactId>classmock</artifactId>
-  <version>2.0</version>
+  <version>2.1</version>
 </dependency>
 ```
 #### If you prefer download of file:
-The library can be downloaded in [ClassMock](https://oss.sonatype.org/content/groups/staging/net/sf/esfinge/classmock/2.0/).
+The library can be downloaded in [ClassMock](https://oss.sonatype.org/content/groups/staging/net/sf/esfinge/classmock/2.1/).
 
 ## 4. Tutorial:
 
@@ -59,18 +59,19 @@ Creating a class or interface.
 ```java
 // Create a Concrete Class
 final Class<?> clazz = ClassMock.of("MyEspecialClass").build();
+final Class<?> clazz = ClassMock.of("MyEspecialClass").asClass().build();
 
 // Create an Abstract Class
-final Class<?> absClazz = ClassMock.of("AbstractMyEspecialClass").asAbstract.build();
+final Class<?> absClazz = ClassMock.of("AbstractMyEspecialClass").asAbstract().build();
 
 // Create an Interface
-final Class<?> interf = ClassMock.of("IMyEspecialClass").asInterface.build();
+final Class<?> interf = ClassMock.of("IMyEspecialClass").asInterface().build();
 
 // Create an Annotaion
-final Class<?> annotation = ClassMock.of("MyEspecialAnnotationClass").asAnnotation.build();
+final Class<?> annotationClazz = ClassMock.of("MyEspecialAnnotationClass").asAnnotation().build();
 
 // Create an Enum
-final Class<?> annotation = ClassMock.of("MyEspecialAnnotationClass").asAnnotation.build();
+final Class<?> enumClazz = ClassMock.of("MyEspecialAnnotationClass").asEnum().build();
 ```
 
 ### 4.1 One minute tutorial:
@@ -118,9 +119,9 @@ A simple example of Enum.
 ```java
 final IClassWriter mock = ClassMock.of(this.getClassName()).asEnum();
 
+// Create enum constants
 Arrays.asList("BMW", "BENTLEY", "PORSCHE", "CADILLAC", "LEXUS", "FERRARI", "MERCEDES", "FORD")
             .forEach(car -> {
-
                 mock.field(car, Enum.class)
                                 .hasGetter(false)
                                 .hasSetter(false)
@@ -157,6 +158,6 @@ final Class<?> annotation = mock.build();
 
 ### 4.4 More tutorials:
 
-See our tests section in the project.
+See our [tests section](https://github.com/EsfingeFramework/ClassMock/blob/master/ClassMock/src/test/java/net/sf/esfinge/classmock/example/general/TesteClassMock.java) in the project.
 
 ### [MIT Licensed](LICENSE)
