@@ -29,14 +29,71 @@ import net.sf.esfinge.classmock.api.IAnnotationReader;
 import net.sf.esfinge.classmock.api.IClassWriter;
 import net.sf.esfinge.classmock.api.enums.ModifierEnum;
 import net.sf.esfinge.classmock.api.enums.VisibilityEnum;
+import net.sf.esfinge.classmock.example.basic.FactoryIt;
 import net.sf.esfinge.classmock.imp.AnnotationImp;
 import net.sf.esfinge.classmock.imp.MethodImp;
 
 public class TesteClassMock {
 
-    private final String className = "MinhaClasseMock";
+    @Test
+    public void isConcreteClass() {
 
-    private static int counter;
+        final ClassMock mock = (ClassMock) ClassMock.of(FactoryIt.getName()).asClass();
+
+        Assert.assertTrue(mock.isClass());
+        Assert.assertFalse(mock.isAbstract());
+        Assert.assertFalse(mock.isAnnotation());
+        Assert.assertFalse(mock.isEnum());
+        Assert.assertFalse(mock.isInterface());
+    }
+
+    @Test
+    public void isAbstractClass() {
+
+        final ClassMock mock = (ClassMock) ClassMock.of(FactoryIt.getName()).asAbstract();
+
+        Assert.assertTrue(mock.isAbstract());
+        Assert.assertFalse(mock.isClass());
+        Assert.assertFalse(mock.isAnnotation());
+        Assert.assertFalse(mock.isEnum());
+        Assert.assertFalse(mock.isInterface());
+    }
+
+    @Test
+    public void isAnnotation() {
+
+        final ClassMock mock = (ClassMock) ClassMock.of(FactoryIt.getName()).asAnnotation();
+
+        Assert.assertTrue(mock.isAnnotation());
+        Assert.assertFalse(mock.isAbstract());
+        Assert.assertFalse(mock.isClass());
+        Assert.assertFalse(mock.isEnum());
+        Assert.assertFalse(mock.isInterface());
+    }
+
+    @Test
+    public void isEnum() {
+
+        final ClassMock mock = (ClassMock) ClassMock.of(FactoryIt.getName()).asEnum();
+
+        Assert.assertTrue(mock.isEnum());
+        Assert.assertFalse(mock.isAnnotation());
+        Assert.assertFalse(mock.isAbstract());
+        Assert.assertFalse(mock.isClass());
+        Assert.assertFalse(mock.isInterface());
+    }
+
+    @Test
+    public void isInterface() {
+
+        final ClassMock mock = (ClassMock) ClassMock.of(FactoryIt.getName()).asInterface();
+
+        Assert.assertTrue(mock.isInterface());
+        Assert.assertFalse(mock.isEnum());
+        Assert.assertFalse(mock.isAnnotation());
+        Assert.assertFalse(mock.isAbstract());
+        Assert.assertFalse(mock.isClass());
+    }
 
     @Test
     public void reloadClass() {
@@ -51,7 +108,7 @@ public class TesteClassMock {
     @Test
     public void createMockPackageClass() {
 
-        final String fullName = "net.sf.esfinge.classmock.fake.dynamic." + this.getClassName();
+        final String fullName = "net.sf.esfinge.classmock.fake.dynamic." + FactoryIt.getName();
         final Class<?> clazz = ClassMock.of(fullName).build();
 
         Assert.assertEquals(clazz.getCanonicalName(), fullName);
@@ -60,7 +117,7 @@ public class TesteClassMock {
     @Test
     public void createInterface() {
 
-        final Class<?> clazz = ClassMock.of(this.getClassName()).asInterface().build();
+        final Class<?> clazz = ClassMock.of(FactoryIt.getName()).asInterface().build();
 
         Assert.assertTrue(clazz.isInterface());
     }
@@ -68,7 +125,7 @@ public class TesteClassMock {
     @Test
     public void createAbstractClass() {
 
-        final Class<?> clazz = ClassMock.of(this.getClassName()).asAbstract().build();
+        final Class<?> clazz = ClassMock.of(FactoryIt.getName()).asAbstract().build();
 
         Assert.assertTrue(Modifier.isAbstract(clazz.getModifiers()));
     }
@@ -76,7 +133,7 @@ public class TesteClassMock {
     @Test
     public void createEnumClass() {
 
-        final Class<?> clazz = ClassMock.of(this.getClassName()).asEnum().build();
+        final Class<?> clazz = ClassMock.of(FactoryIt.getName()).asEnum().build();
 
         Assert.assertTrue(clazz.isEnum());
     }
@@ -84,7 +141,7 @@ public class TesteClassMock {
     @Test
     public void createAnnotationClass() {
 
-        final Class<?> clazz = ClassMock.of(this.getClassName()).asAnnotation().build();
+        final Class<?> clazz = ClassMock.of(FactoryIt.getName()).asAnnotation().build();
 
         Assert.assertTrue(clazz.isAnnotation());
     }
@@ -92,7 +149,7 @@ public class TesteClassMock {
     @Test
     public void createAnnotationWithProperties() throws NoSuchMethodException, SecurityException {
 
-        final IClassWriter mock = ClassMock.of(this.getClassName()).asAnnotation();
+        final IClassWriter mock = ClassMock.of(FactoryIt.getName()).asAnnotation();
         mock.method("alias")
                         .returnType(String.class)
                         .visibility(VisibilityEnum.PUBLIC)
@@ -126,7 +183,7 @@ public class TesteClassMock {
         while (counter < cars.size()) {
 
             counter++;
-            final IClassWriter mock = ClassMock.of(this.getClassName()).asEnum();
+            final IClassWriter mock = ClassMock.of(FactoryIt.getName()).asEnum();
 
             for (int i = 0; i < counter; i++) {
 
@@ -163,7 +220,7 @@ public class TesteClassMock {
         while (counter < cars.size()) {
 
             counter++;
-            final IClassWriter mock = ClassMock.of(this.getClassName()).asEnum();
+            final IClassWriter mock = ClassMock.of(FactoryIt.getName()).asEnum();
 
             for (int i = 0; i < counter; i++) {
 
@@ -200,7 +257,7 @@ public class TesteClassMock {
     @Test
     public void createConcreteClass() {
 
-        final String name = this.getClassName();
+        final String name = FactoryIt.getName();
         final Class<?> clazz = ClassMock.of(name).build();
 
         Assert.assertEquals(clazz.getSimpleName(), name);
@@ -209,7 +266,7 @@ public class TesteClassMock {
     @Test
     public void createClassWithSuperClass() {
 
-        final IClassWriter mock = ClassMock.of(this.getClassName());
+        final IClassWriter mock = ClassMock.of(FactoryIt.getName());
         mock.superclass(Assert.class);
 
         final Class<?> clazz = mock.build();
@@ -219,7 +276,7 @@ public class TesteClassMock {
     @Test
     public void createClassWithSuperClassAndInterfaces() {
 
-        final IClassWriter mock = ClassMock.of(this.getClassName());
+        final IClassWriter mock = ClassMock.of(FactoryIt.getName());
         mock.superclass(Assert.class);
         mock.interfaces(Serializable.class, Cloneable.class);
 
@@ -234,7 +291,7 @@ public class TesteClassMock {
     @Test
     public void createClassWithOneAnnotations() {
 
-        final IClassWriter mock = ClassMock.of(this.getClassName());
+        final IClassWriter mock = ClassMock.of(FactoryIt.getName());
         mock.annotation(Entity.class);
 
         final Class<?> clazz = mock.build();
@@ -248,7 +305,7 @@ public class TesteClassMock {
         final String schemaName = "auth";
         final String tableName = "ANY_TABLE_NAME_MOCK";
 
-        final IClassWriter mock = ClassMock.of(this.getClassName());
+        final IClassWriter mock = ClassMock.of(FactoryIt.getName());
         mock.annotation(Entity.class)
                         .and()
                         .annotation(Table.class)
@@ -285,7 +342,7 @@ public class TesteClassMock {
 
         final NamedQuery[] arrayQueries = { namedQuery1, namedQuery2 };
 
-        final IClassWriter mock = ClassMock.of(this.getClassName());
+        final IClassWriter mock = ClassMock.of(FactoryIt.getName());
         mock.annotation(NamedQueries.class)
                         .property(arrayQueries)
                         .and()
@@ -335,7 +392,7 @@ public class TesteClassMock {
 
         final IAnnotationReader[] arrayQueries = { namedQuery1, namedQuery2 };
 
-        final IClassWriter mock = ClassMock.of(this.getClassName());
+        final IClassWriter mock = ClassMock.of(FactoryIt.getName());
         mock.annotation(NamedQueries.class)
                         .property(arrayQueries)
                         .and()
@@ -365,7 +422,7 @@ public class TesteClassMock {
     @Test
     public void createClassWithStaticFields() {
 
-        final IClassWriter mock = ClassMock.of(this.getClassName());
+        final IClassWriter mock = ClassMock.of(FactoryIt.getName());
         mock.field("name", String.class)
                         .value("NAME")
                         .modifiers(ModifierEnum.STATIC)
@@ -388,7 +445,7 @@ public class TesteClassMock {
     @Test
     public void createClassWithInstanceFields() {
 
-        final IClassWriter mock = ClassMock.of(this.getClassName());
+        final IClassWriter mock = ClassMock.of(FactoryIt.getName());
         mock.field("api", Float.class);
         mock.field("version", String.class);
 
@@ -401,7 +458,7 @@ public class TesteClassMock {
     @Test
     public void createClassWithInstanceFieldWithAnnotations() {
 
-        final IClassWriter mock = ClassMock.of(this.getClassName());
+        final IClassWriter mock = ClassMock.of(FactoryIt.getName());
         mock.field("visibility", Date.class).annotation(Column.class)
                         .property("name", "EN_VISIBILITY")
                         .property("nullable", true)
@@ -456,7 +513,7 @@ public class TesteClassMock {
     @Test
     public void createClassWithInstanceFieldWithGetter() {
 
-        final IClassWriter mock = ClassMock.of(this.getClassName());
+        final IClassWriter mock = ClassMock.of(FactoryIt.getName());
         mock.field("name", String.class).hasSetter(false);
 
         for (final Method method : mock.build().getDeclaredMethods()) {
@@ -468,7 +525,7 @@ public class TesteClassMock {
     @Test
     public void createClassWithInstanceFieldWithSetter() {
 
-        final IClassWriter mock = ClassMock.of(this.getClassName());
+        final IClassWriter mock = ClassMock.of(FactoryIt.getName());
         mock.field("name", String.class).hasGetter(false);
 
         for (final Method method : mock.build().getDeclaredMethods()) {
@@ -480,7 +537,7 @@ public class TesteClassMock {
     @Test
     public void createClassWithInstanceFieldWithGetterSetter() {
 
-        final IClassWriter mock = ClassMock.of(this.getClassName());
+        final IClassWriter mock = ClassMock.of(FactoryIt.getName());
         mock.field("name", String.class);
 
         for (final Method method : mock.build().getDeclaredMethods()) {
@@ -496,7 +553,7 @@ public class TesteClassMock {
     @Test
     public void createClassWithMethods() {
 
-        final IClassWriter mock = ClassMock.of(this.getClassName());
+        final IClassWriter mock = ClassMock.of(FactoryIt.getName());
         mock.method("testIt")
                         .returnType(void.class)
                         .exceptions(Exception.class)
@@ -526,7 +583,7 @@ public class TesteClassMock {
                         .and()
                         .annotation(Override.class);
 
-        final IClassWriter mock = ClassMock.of(this.getClassName());
+        final IClassWriter mock = ClassMock.of(FactoryIt.getName());
         mock.method(reader);
 
         for (final Method method : mock.build().getDeclaredMethods()) {
@@ -540,7 +597,7 @@ public class TesteClassMock {
 
         final int posicaoGenerics = 0;
 
-        final IClassWriter mock = ClassMock.of(this.getClassName());
+        final IClassWriter mock = ClassMock.of(FactoryIt.getName());
         mock.superclass(ModelOld.class).generics(String.class);
 
         final Class<?> clazz = mock.build();
@@ -556,7 +613,7 @@ public class TesteClassMock {
         final int posicaoGenericsZero = 0;
         final int posicaoGenericsOne = 1;
 
-        final IClassWriter mock = ClassMock.of(this.getClassName());
+        final IClassWriter mock = ClassMock.of(FactoryIt.getName());
         mock.superclass(ModelNew.class).generics(String.class).generics(Integer.class);
 
         final Class<?> clazz = mock.build();
@@ -567,10 +624,5 @@ public class TesteClassMock {
 
         Assert.assertTrue(String.class.isAssignableFrom((Class<?>) type0));
         Assert.assertTrue(Integer.class.isAssignableFrom((Class<?>) type1));
-    }
-
-    private String getClassName() {
-
-        return this.className + "_" + TesteClassMock.counter++;
     }
 }
