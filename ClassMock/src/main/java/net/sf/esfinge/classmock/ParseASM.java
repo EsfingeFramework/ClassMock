@@ -587,6 +587,7 @@ class ParseASM {
 
             if (this.isDefaultFieldEnumValues(field)) {
 
+                // Especial enum constant
                 fv = this.cw.visitField(opcodes,
                                 field.name(),
                                 this.getEntityEnumNameArray(),
@@ -595,6 +596,7 @@ class ParseASM {
 
             } else {
 
+                // Normal enum constants
                 fv = this.cw.visitField(opcodes,
                                 field.name(),
                                 this.getEntityEnumName(),
@@ -603,10 +605,11 @@ class ParseASM {
             }
         } else {
 
+            // Normal fields
             fv = this.cw.visitField(opcodes,
                             field.name(),
                             this.getDescriptor(field.type()),
-                            this.getDescriptor(field.generics()),
+                            this.getDescriptor(field.generics()), // TODO Implement
                             field.value());
         }
 
