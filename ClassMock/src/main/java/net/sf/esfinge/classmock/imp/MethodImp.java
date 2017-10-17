@@ -68,6 +68,12 @@ public class MethodImp implements IMethodReader, IMethodWriter, Comparable<Metho
     }
 
     @Override
+    public IMethodWriter returnTypeAsVoid() {
+
+        return this.returnType(void.class);
+    }
+
+    @Override
     public IMethodWriter returnType(final Class<?> clazz) {
 
         this.returnType = clazz;

@@ -20,6 +20,12 @@ public interface IMethodWriter extends IAnnotationWriter {
     IMethodWriter returnType(Class<?> clazz);
 
     /**
+     *
+     * @return set return as void
+     */
+    IMethodWriter returnTypeAsVoid();
+
+    /**
      * @param visibility
      *            of the method
      * @return IMethodWriter
