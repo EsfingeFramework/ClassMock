@@ -160,4 +160,4 @@ final Class<?> annotation = mock.build();
 
 See our [tests section](https://github.com/EsfingeFramework/ClassMock/blob/master/ClassMock/src/test/java/net/sf/esfinge/classmock/example/general/TesteClassMock.java) in the project.
 
-### [MIT Licensed](LICENSE)
+### [MIT Licensed](https://github.com/EsfingeFramework/ClassMock/blob/master/LICENSE)
