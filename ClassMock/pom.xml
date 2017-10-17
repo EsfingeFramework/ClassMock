@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.sf.esfinge</groupId>
 	<artifactId>classmock</artifactId>
-	<version>2.0</version>
+	<version>2.1</version>
 	<packaging>jar</packaging>
 
 	<licenses>
@@ -37,7 +37,7 @@
 			<organizationUrl />
 		</developer>
 	</developers>
-	
+
 	<build>
 		<plugins>
 			<!-- BUILD VERSION -->
@@ -141,7 +141,14 @@
 			<artifactId>asm</artifactId>
 			<version>5.2</version>
 		</dependency>
-		
+
+		<!-- ASM UTIL -->
+		<dependency>
+			<groupId>org.ow2.asm</groupId>
+			<artifactId>asm-util</artifactId>
+			<version>5.2</version>
+			<scope>test</scope>
+		</dependency>
 		<!-- POWERMOCK -->
 		<dependency>
 			<groupId>org.powermock</groupId>
@@ -163,11 +170,11 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-	
+
 	<organization>
 		<name>Esfinge Framework</name>
 		<url>http://esfinge.sourceforge.net/</url>
@@ -177,9 +184,9 @@
 		<url>https://github.com/EsfingeFramework/ClassMock.git</url>
 		<connection>scm:git:git://github.com/EsfingeFramework/gamification.git</connection>
 		<developerConnection>scm:git:git://github.com/EsfingeFramework/gamification.git</developerConnection>
-		<tag>classmock-2.0-SNAPSHOT</tag>
+		<tag>classmock-2.1-SNAPSHOT</tag>
 	</scm>
-	
+
 	<name>Classmock</name>
 	<url>http://esfinge.sourceforge.net/</url>
 	<description>ClassMock is a framework that helps the creation of unit tests for components that use reflection or annotations. In this kind of classes, the behavior is dependent of the class structure. This way, each test case usually works with a different class created specifically for the test. With ClassMock is possible to define and generate classes in runtime, allowing a better test readability and logic sharing between tests.</description>
