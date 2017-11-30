@@ -115,6 +115,18 @@ public class TesteClassMock {
     }
 
     @Test
+    public void createMockPackageClassWithField() {
+
+        final String fullName = "net.sf.esfinge.classmock.fake.dynamic." + FactoryIt.getName();
+        final IClassWriter mock = ClassMock.of(fullName);
+        mock.field("name", String.class);
+
+        final Class<?> clazz = mock.build();
+
+        Assert.assertEquals(clazz.getCanonicalName(), fullName);
+    }
+
+    @Test
     public void createInterface() {
 
         final Class<?> clazz = ClassMock.of(FactoryIt.getName()).asInterface().build();
