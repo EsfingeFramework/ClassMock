@@ -440,7 +440,7 @@ class ParseASM {
 
         mv.visitCode();
         mv.visitVarInsn(Opcodes.ALOAD, 0);
-        mv.visitFieldInsn(Opcodes.GETFIELD, this.reader.name(), field.name(), typeDescriptor);
+        mv.visitFieldInsn(Opcodes.GETFIELD, this.getEntityName(), field.name(), typeDescriptor);
 
         if (Arrays.asList("I", "B", "Z", "C", "S").contains(typeDescriptor)) {
             mv.visitInsn(Opcodes.IRETURN);
@@ -462,6 +462,7 @@ class ParseASM {
 
         final String typeDescriptor = this.getDescriptor(field.type());
         final String typeGenericDescriptor = this.getDescriptor(field.generics());
+        
         final MethodVisitor mv = this.cw.visitMethod(
                         VisibilityEnum.PUBLIC.getOpCodes(),
                         this.getSetterName(field),
@@ -493,7 +494,7 @@ class ParseASM {
             mv.visitVarInsn(Opcodes.ALOAD, 1);
         }
 
-        mv.visitFieldInsn(Opcodes.PUTFIELD, this.reader.name(), field.name(), typeDescriptor);
+        mv.visitFieldInsn(Opcodes.PUTFIELD, this.getEntityName(), field.name(), typeDescriptor);
         mv.visitInsn(Opcodes.RETURN);
         mv.visitMaxs(2, 2);
         mv.visitEnd();
