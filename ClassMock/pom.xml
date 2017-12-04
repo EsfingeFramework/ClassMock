@@ -184,7 +184,7 @@
 		<url>https://github.com/EsfingeFramework/ClassMock.git</url>
 		<connection>scm:git:git://github.com/EsfingeFramework/gamification.git</connection>
 		<developerConnection>scm:git:git://github.com/EsfingeFramework/gamification.git</developerConnection>
-		<tag>classmock-2.1-SNAPSHOT</tag>
+		<tag>classmock-2.1.1-SNAPSHOT</tag>
 	</scm>
 
 	<name>Classmock</name>
