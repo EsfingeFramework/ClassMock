@@ -32,11 +32,11 @@ Add in your pom.xml file
 <dependency>
   <groupId>net.sf.esfinge</groupId>
   <artifactId>classmock</artifactId>
-  <version>2.1.1</version>
+  <version>2.1.2</version>
 </dependency>
 ```
 #### If you prefer download of file:
-The library can be downloaded in [ClassMock](https://oss.sonatype.org/content/groups/staging/net/sf/esfinge/classmock/2.1.1/).
+The library can be downloaded in [ClassMock](https://oss.sonatype.org/content/groups/staging/net/sf/esfinge/classmock/2.1.2/).
 
 ## 4. Tutorial:
 
