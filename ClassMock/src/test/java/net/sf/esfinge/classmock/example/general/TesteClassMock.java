@@ -464,6 +464,7 @@ public class TesteClassMock {
         for (final Field field : mock.build().getDeclaredFields()) {
 
             Assert.assertFalse(Modifier.isStatic(field.getModifiers()));
+            Assert.assertTrue(Modifier.isPrivate(field.getModifiers()));
         }
     }
 
