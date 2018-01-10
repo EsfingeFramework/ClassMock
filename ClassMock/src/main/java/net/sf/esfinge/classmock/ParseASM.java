@@ -188,12 +188,17 @@ class ParseASM {
         for (final IMethodReader method : this.reader.methods()) {
 
             int parameterPosition = 0;
+            final int opcodes = method.visibility().getOpCodes()
+                            + method.modifiers().stream().mapToInt(m -> m.getOpCodes()).sum();
+
             final MethodVisitor mv = this.cw.visitMethod(
-                            method.visibility().getOpCodes(),
+                            opcodes,
                             method.name(),
                             this.getMethodSignature(method),
                             null,
-                            method.exceptions().stream().map(clazz -> this.getInternalName(clazz)).toArray(String[]::new));
+                            method.exceptions().isEmpty()
+                                            ? null
+                                            : method.exceptions().stream().map(clazz -> this.getInternalName(clazz)).toArray(String[]::new));
 
             for (final IAnnotationReader wrapper : method.annotations()) {
 
@@ -212,51 +217,57 @@ class ParseASM {
 
             mv.visitCode();
 
-            if (method.returnType() == void.class) {
+            // Interface and Annotation can't have return treatment like a normal Class
+            if (!this.reader.isInterface() && !this.reader.isAnnotation()) {
 
-                mv.visitInsn(Opcodes.RETURN);
-                mv.visitMaxs(0, 1);
+                if (method.returnType() == void.class) {
 
-            } else if (Arrays.asList(int.class, short.class, byte.class, char.class, boolean.class)
-                            .contains(method.returnType())) {
+                    mv.visitInsn(Opcodes.RETURN);
+                    mv.visitMaxs(0, 1);
 
-                mv.visitInsn(Opcodes.ICONST_0);
-                mv.visitInsn(Opcodes.IRETURN);
-                mv.visitMaxs(1, 1);
+                } else if (Arrays.asList(int.class, short.class, byte.class, char.class, boolean.class)
+                                .contains(method.returnType())) {
 
-            } else if (method.returnType() == long.class) {
+                    mv.visitInsn(Opcodes.ICONST_0);
+                    mv.visitInsn(Opcodes.IRETURN);
+                    mv.visitMaxs(1, 1);
 
-                mv.visitInsn(Opcodes.LCONST_0);
-                mv.visitInsn(Opcodes.LRETURN);
-                mv.visitMaxs(2, 1);
+                } else if (method.returnType() == long.class) {
 
-            } else if (method.returnType() == float.class) {
+                    mv.visitInsn(Opcodes.LCONST_0);
+                    mv.visitInsn(Opcodes.LRETURN);
+                    mv.visitMaxs(2, 1);
 
-                mv.visitInsn(Opcodes.FCONST_0);
-                mv.visitInsn(Opcodes.FRETURN);
-                mv.visitMaxs(1, 1);
+                } else if (method.returnType() == float.class) {
 
-            } else if (method.returnType() == double.class) {
+                    mv.visitInsn(Opcodes.FCONST_0);
+                    mv.visitInsn(Opcodes.FRETURN);
+                    mv.visitMaxs(1, 1);
 
-                mv.visitInsn(Opcodes.DCONST_0);
-                mv.visitInsn(Opcodes.DRETURN);
-                mv.visitMaxs(2, 1);
+                } else if (method.returnType() == double.class) {
 
-            } else {
+                    mv.visitInsn(Opcodes.DCONST_0);
+                    mv.visitInsn(Opcodes.DRETURN);
+                    mv.visitMaxs(2, 1);
 
-                mv.visitInsn(Opcodes.ACONST_NULL);
-                mv.visitInsn(Opcodes.ARETURN);
-                mv.visitMaxs(1, 1);
-            }
+                } else {
 
-            if (this.reader.isAnnotation() && (method.value() != null)) {
+                    mv.visitInsn(Opcodes.ACONST_NULL);
+                    mv.visitInsn(Opcodes.ARETURN);
+                    mv.visitMaxs(1, 1);
+                }
+
+                mv.visitEnd();
+
+                // But if is a Annotation and it has a default value set, ok.
+            } else if (this.reader.isAnnotation() && (method.value() != null)) {
 
                 final AnnotationVisitor av = mv.visitAnnotationDefault();
                 av.visit(null, method.value());
                 av.visitEnd();
-            }
 
-            mv.visitEnd();
+                mv.visitEnd();
+            }
         }
     }
 
@@ -462,7 +473,7 @@ class ParseASM {
 
         final String typeDescriptor = this.getDescriptor(field.type());
         final String typeGenericDescriptor = this.getDescriptor(field.generics());
-        
+
         final MethodVisitor mv = this.cw.visitMethod(
                         VisibilityEnum.PUBLIC.getOpCodes(),
                         this.getSetterName(field),
@@ -582,7 +593,8 @@ class ParseASM {
     private FieldVisitor toFieldVisitor(final IFieldReader field) {
 
         FieldVisitor fv = null;
-        final int opcodes = field.modifiers().stream().mapToInt(m -> m.getOpCodes()).sum();
+        final int opcodes = field.visibility().getOpCodes()
+                        + field.modifiers().stream().mapToInt(m -> m.getOpCodes()).sum();
 
         if (this.reader.isEnum() && field.modifiers().contains(ModifierEnum.STATIC)) {
 
