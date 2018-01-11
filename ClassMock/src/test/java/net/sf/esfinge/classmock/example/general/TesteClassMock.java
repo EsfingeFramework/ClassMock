@@ -1,6 +1,9 @@
 package net.sf.esfinge.classmock.example.general;
 
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -182,6 +185,23 @@ public class TesteClassMock {
         Assert.assertNotNull(clazz.getDeclaredMethod("query"));
         Assert.assertNotNull(clazz.getDeclaredMethod("active"));
         Assert.assertEquals(clazz.getDeclaredMethod("active").getDefaultValue(), Boolean.TRUE);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void createAnnotationWithoutMethods() {
+
+        // Create annotation
+        IClassWriter mock = ClassMock.of(FactoryIt.getName()).asAnnotation();
+        mock.annotation(Retention.class).property(RetentionPolicy.RUNTIME); // You must have this, when without methods
+        final Class<? extends Annotation> annotation = (Class<? extends Annotation>) mock.build();
+
+        // Create a class to use the annotation
+        mock = ClassMock.of(FactoryIt.getName());
+        mock.annotation(annotation);
+        final Class<?> clazz = mock.build();
+
+        Assert.assertTrue(clazz.isAnnotationPresent(annotation));
     }
 
     @Test
