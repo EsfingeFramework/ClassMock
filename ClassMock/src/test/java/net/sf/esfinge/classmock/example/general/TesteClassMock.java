@@ -193,7 +193,7 @@ public class TesteClassMock {
 
         // Create annotation
         IClassWriter mock = ClassMock.of(FactoryIt.getName()).asAnnotation();
-        mock.annotation(Retention.class).property(RetentionPolicy.RUNTIME); // You must have this, when without methods
+        mock.annotation(Retention.class).property(RetentionPolicy.RUNTIME); // You must have this to be reflected by other classes
         final Class<? extends Annotation> annotation = (Class<? extends Annotation>) mock.build();
 
         // Create a class to use the annotation
