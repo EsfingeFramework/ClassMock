@@ -139,6 +139,8 @@ A simple example of Annotation.
 
 ```java
 final IClassWriter mock = ClassMock.of(this.getClassName()).asAnnotation();
+mock.annotation(Retention.class)
+                .property(RetentionPolicy.RUNTIME);
 mock.method("alias")
                 .returnType(String.class)
                 .visibility(VisibilityEnum.PUBLIC)
