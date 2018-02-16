@@ -2,6 +2,9 @@ package net.sf.esfinge.classmock.api.enums;
 
 import org.objectweb.asm.Opcodes;
 
+/**
+ * Class responsible to define all JRE possibilities for compilation via ASM.
+ */
 public enum JavaEnum {
 
     /** V1_1 */

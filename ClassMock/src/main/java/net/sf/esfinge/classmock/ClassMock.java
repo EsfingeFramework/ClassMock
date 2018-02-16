@@ -28,6 +28,10 @@ import net.sf.esfinge.classmock.imp.FieldImp;
 import net.sf.esfinge.classmock.imp.MethodImp;
 import net.sf.esfinge.classmock.imp.SuperClassImp;
 
+/**
+ * Class responsible for implement all definitions of: Concrete Class, Abstract Class, Enum, Interface, Annotation. It uses the builder pattern to
+ * simplify the usage.
+ */
 public class ClassMock implements IClassReader, IClassWriter {
 
     private String name;
@@ -55,6 +59,8 @@ public class ClassMock implements IClassReader, IClassWriter {
     }
 
     /**
+     * Define a name for your <b>Entity</b>. Understand Entity as a <b>generic name</b> that can represent: <i>Concrete Class, Abstract
+     * Class, Enum, Interface or Annotation</i>.
      *
      * @param name
      *            of the entity

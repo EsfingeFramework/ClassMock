@@ -7,6 +7,9 @@ import java.util.List;
 import net.sf.esfinge.classmock.api.ISuperClassReader;
 import net.sf.esfinge.classmock.api.ISuperClassWriter;
 
+/**
+ * Class responsible for implement all definitions of a super class.
+ */
 public class SuperClassImp implements ISuperClassReader, ISuperClassWriter {
 
     private Class<?> superclass;
@@ -14,8 +17,10 @@ public class SuperClassImp implements ISuperClassReader, ISuperClassWriter {
     private final List<Class<?>> generics = new ArrayList<>();
 
     /**
+     * Constructor to receive the super class.
+     *
      * @param superclass
-     *            to be associate
+     *            to bind
      */
     public SuperClassImp(final Class<?> superclass) {
 

@@ -2,6 +2,9 @@ package net.sf.esfinge.classmock.api.enums;
 
 import org.objectweb.asm.Opcodes;
 
+/**
+ * Class responsible to inform the modifiers for classes, fields and methods.
+ */
 public enum ModifierEnum {
 
     /** ANNOTATION to class */

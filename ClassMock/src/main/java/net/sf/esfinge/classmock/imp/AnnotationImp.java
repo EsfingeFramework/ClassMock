@@ -11,6 +11,9 @@ import net.sf.esfinge.classmock.api.IAnnotationReader;
 import net.sf.esfinge.classmock.api.IAnnotationWriter;
 import net.sf.esfinge.classmock.api.enums.LocationEnum;
 
+/**
+ * Class responsible for implement all definitions of an annotation.
+ */
 public class AnnotationImp implements IAnnotationReader, IAnnotationPropertyWriter, IAnnotationLocationReader, IAnnotationLocationWriter {
 
     private IAnnotationWriter writer;
@@ -22,8 +25,10 @@ public class AnnotationImp implements IAnnotationReader, IAnnotationPropertyWrit
     private final Map<String, Object> properties = new HashMap<>();
 
     /***
+     * Constructor to receive the annotation.
+     *
      * @param annotation
-     *            to associate
+     *            to bind
      */
     public AnnotationImp(final Class<? extends Annotation> annotation) {
 
@@ -31,8 +36,10 @@ public class AnnotationImp implements IAnnotationReader, IAnnotationPropertyWrit
     }
 
     /**
+     * Constructor to receive the reader.
+     *
      * @param reader
-     *            to associates
+     *            to bind
      */
     public AnnotationImp(final IAnnotationReader reader) {
 

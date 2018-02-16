@@ -1,10 +1,15 @@
 package net.sf.esfinge.classmock;
 
+/**
+ * Class responsible for act as ClassLoader necessary to load the dynamic class.
+ */
 class MockClassLoader extends ClassLoader {
 
     private static MockClassLoader instance;
 
     /**
+     * Access an instance of our class loader.
+     *
      * @return singleton
      */
     public static MockClassLoader getInstance() {
@@ -18,6 +23,8 @@ class MockClassLoader extends ClassLoader {
     }
 
     /**
+     * Used to mount the class in our class loader.
+     *
      * @param name
      *            of the entity
      * @param b

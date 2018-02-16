@@ -14,6 +14,9 @@ import net.sf.esfinge.classmock.api.enums.LocationEnum;
 import net.sf.esfinge.classmock.api.enums.ModifierEnum;
 import net.sf.esfinge.classmock.api.enums.VisibilityEnum;
 
+/**
+ * Class responsible for implement all definitions of a field.
+ */
 public class FieldImp implements IFieldReader, IFieldWriter, Comparable<FieldImp> {
 
     private String name;
@@ -35,10 +38,12 @@ public class FieldImp implements IFieldReader, IFieldWriter, Comparable<FieldImp
     private final Set<IAnnotationReader> annotations = new HashSet<>();
 
     /**
+     * Constructor to receive the field.
+     *
      * @param name
      *            of the field
      * @param type
-     *            of the field
+     *            class type of the field
      */
     public FieldImp(final String name, final Class<?> type) {
 

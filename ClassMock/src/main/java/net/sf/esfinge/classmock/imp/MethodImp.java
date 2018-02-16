@@ -17,6 +17,9 @@ import net.sf.esfinge.classmock.api.enums.LocationEnum;
 import net.sf.esfinge.classmock.api.enums.ModifierEnum;
 import net.sf.esfinge.classmock.api.enums.VisibilityEnum;
 
+/**
+ * Class responsible for implement all definitions of a method.
+ */
 public class MethodImp implements IMethodReader, IMethodWriter, Comparable<MethodImp> {
 
     private String name;
@@ -36,6 +39,8 @@ public class MethodImp implements IMethodReader, IMethodWriter, Comparable<Metho
     private final Set<IAnnotationReader> annotations = new HashSet<>();
 
     /**
+     * Constructor to receive the name of the method.
+     *
      * @param name
      *            of the method
      */
@@ -45,6 +50,8 @@ public class MethodImp implements IMethodReader, IMethodWriter, Comparable<Metho
     }
 
     /**
+     * Constructor to receive the method.
+     *
      * @param method
      *            to be added
      */

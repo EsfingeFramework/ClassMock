@@ -33,6 +33,9 @@ import net.sf.esfinge.classmock.api.enums.VisibilityEnum;
 import net.sf.esfinge.classmock.imp.AnnotationImp;
 import net.sf.esfinge.classmock.imp.FieldImp;
 
+/**
+ * Class responsible for parse all class definition to ASM format.
+ */
 class ParseASM {
 
     private static final String ENUM_VALUES = "ENUM$VALUES";
@@ -44,6 +47,8 @@ class ParseASM {
     private final ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
 
     /**
+     * Constructor to parse
+     *
      * @param reader
      *            to build
      */
@@ -53,6 +58,8 @@ class ParseASM {
     }
 
     /**
+     * Mount the class and generate it definition in byte array.
+     *
      * @return the data from the entity
      */
     public byte[] parse() {
