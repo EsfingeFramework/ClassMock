@@ -4,7 +4,6 @@ import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sf.esfinge.classmock.api.IAnnotationLocationReader;
 import net.sf.esfinge.classmock.api.IAnnotationLocationWriter;
 import net.sf.esfinge.classmock.api.IAnnotationPropertyWriter;
 import net.sf.esfinge.classmock.api.IAnnotationReader;
@@ -14,7 +13,7 @@ import net.sf.esfinge.classmock.api.enums.LocationEnum;
 /**
  * Class responsible for implement all definitions of an annotation.
  */
-public class AnnotationImp implements IAnnotationReader, IAnnotationPropertyWriter, IAnnotationLocationReader, IAnnotationLocationWriter {
+public class AnnotationImp implements IAnnotationReader, IAnnotationPropertyWriter, IAnnotationLocationWriter {
 
     private IAnnotationWriter writer;
 
@@ -44,6 +43,7 @@ public class AnnotationImp implements IAnnotationReader, IAnnotationPropertyWrit
     public AnnotationImp(final IAnnotationReader reader) {
 
         this.annotation = reader.annotation();
+        this.location = reader.location();
         this.properties.putAll(reader.properties());
     }
 
