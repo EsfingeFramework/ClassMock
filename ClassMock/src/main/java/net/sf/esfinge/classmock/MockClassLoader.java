@@ -3,7 +3,7 @@ package net.sf.esfinge.classmock;
 /**
  * Class responsible for act as ClassLoader necessary to load the dynamic class.
  */
-class MockClassLoader extends ClassLoader {
+public class MockClassLoader extends ClassLoader {
 
     private static MockClassLoader instance;
 
