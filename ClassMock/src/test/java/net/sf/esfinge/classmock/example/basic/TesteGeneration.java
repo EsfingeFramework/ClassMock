@@ -11,8 +11,6 @@ import org.testng.annotations.Test;
 import net.sf.esfinge.classmock.ClassMock;
 import net.sf.esfinge.classmock.api.IAnnotationReader;
 import net.sf.esfinge.classmock.api.IClassWriter;
-import net.sf.esfinge.classmock.api.IMethodReader;
-import net.sf.esfinge.classmock.api.IMethodWriter;
 import net.sf.esfinge.classmock.api.enums.LocationEnum;
 import net.sf.esfinge.classmock.imp.AnnotationImp;
 import net.sf.esfinge.classmock.imp.MethodImp;
@@ -32,7 +30,7 @@ public class TesteGeneration {
 
         final IAnnotationReader[] arrayLabels = { label1, label2 };
 
-        final IMethodWriter method = new MethodImp("testar");
+        final MethodImp method = new MethodImp("testar");
         method.annotation(Teste.class)
                         .property("OK")
                         .property("array", new String[] { "12", "34" });
@@ -49,7 +47,7 @@ public class TesteGeneration {
         mock.annotation(Label.class).property("Crasse");
         mock.field("idade", long.class);
         mock.field("nome", String.class)
-                        .annotation(Teste.class, LocationEnum.GETTER)
+                        .annotation(Teste.class, LocationEnum.FIELD)
                         .property("teste")
                         .property("valor", 23)
                         .property("array", new String[] { "A", "B", "C" })
@@ -58,7 +56,7 @@ public class TesteGeneration {
                         .property("label", label1)
                         .property("labels", arrayLabels);
 
-        mock.method((IMethodReader) method);
+        mock.method(method);
         this.classe = mock.build();
     }
 
