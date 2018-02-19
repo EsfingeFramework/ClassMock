@@ -28,12 +28,14 @@ import net.sf.esfinge.classmock.imp.FieldImp;
 import net.sf.esfinge.classmock.imp.MethodImp;
 import net.sf.esfinge.classmock.imp.SuperClassImp;
 import net.sf.esfinge.classmock.parse.ParseASM;
+import net.sf.esfinge.classmock.parse.ParseFieldSignature;
+import net.sf.esfinge.classmock.parse.ParseMethodSignature;
 
 /**
  * Class responsible for implement all definitions of: Concrete Class, Abstract Class, Enum, Interface, Annotation. It uses the builder pattern to
  * simplify the usage.
  */
-public class ClassMock implements IClassReader, IClassWriter {
+public class ClassMock implements IClassReader, IClassWriter, Cloneable {
 
     private String name;
 
@@ -212,12 +214,12 @@ public class ClassMock implements IClassReader, IClassWriter {
     }
 
     @Override
-    public IMethodWriter method(final String name) {
+    public IFieldWriter fieldByParse(final String fieldSignature) {
 
-        final MethodImp method = new MethodImp(name);
-        this.methods.add(method);
+        final FieldImp wrapper = ParseFieldSignature.getInstance().parse(fieldSignature);
+        this.fields.add(wrapper);
 
-        return method;
+        return wrapper;
     }
 
     @Override
@@ -231,6 +233,24 @@ public class ClassMock implements IClassReader, IClassWriter {
             wrapper = new MethodImp(method);
         }
 
+        this.methods.add(wrapper);
+
+        return wrapper;
+    }
+
+    @Override
+    public IMethodWriter method(final String name) {
+
+        final MethodImp method = new MethodImp(name);
+        this.methods.add(method);
+
+        return method;
+    }
+
+    @Override
+    public IMethodWriter methodByParse(final String methodSignature) {
+
+        final MethodImp wrapper = ParseMethodSignature.getInstance().parse(methodSignature);
         this.methods.add(wrapper);
 
         return wrapper;
@@ -362,5 +382,52 @@ public class ClassMock implements IClassReader, IClassWriter {
     public String toString() {
 
         return this.name;
+    }
+
+    @Override
+    public IClassWriter clone(final String name) {
+
+        final ClassMock clone = new ClassMock(name);
+
+        clone.interfaces.addAll(this.interfaces());
+        clone.version(this.version());
+        clone.modifiers.addAll(this.modifiers());
+        clone.superClassImp.superclass(this.superclass().superclass());
+        clone.superClassImp.generics().addAll(this.superclass().generics());
+
+        // Deep clone
+        this.annotations().forEach(a -> {
+
+            try {
+                final AnnotationImp b = (AnnotationImp) ((AnnotationImp) a).clone();
+                clone.annotation(b);
+            } catch (final Exception e) {
+                // Went wrong
+            }
+        });
+
+        // Deep clone
+        this.fields().forEach(f -> {
+
+            try {
+                final FieldImp b = (FieldImp) ((FieldImp) f).clone();
+                clone.fields().add(b);
+            } catch (final Exception e) {
+                // Went wrong
+            }
+        });
+
+        // Deep clone
+        this.methods().forEach(m -> {
+
+            try {
+                final MethodImp b = (MethodImp) ((MethodImp) m).clone();
+                clone.methods().add(b);
+            } catch (final Exception e) {
+                // Went wrong
+            }
+        });
+
+        return clone;
     }
 }
