@@ -1,4 +1,4 @@
-package net.sf.esfinge.classmock;
+package net.sf.esfinge.classmock.parse;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
@@ -35,7 +35,7 @@ import net.sf.esfinge.classmock.imp.FieldImp;
 /**
  * Class responsible for parse all class definition to ASM format.
  */
-class ParseASM {
+public class ParseASM {
 
     private static final String ENUM_VALUES = "ENUM$VALUES";
 
