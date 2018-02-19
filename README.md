@@ -14,13 +14,15 @@ The ClassMock framework has a very intuitive API that allows you to:
 05. create dynamic Concrete Class;
 06. Add a superclass;
 07. Add interfaces;
-08. Add instance fields;
-09. Add static fields;
-10. Set java version;
-11. Set visibility (PRIVATE, PUBLIC, PROTECTED);
-12. Set modifiers (VOLATILE, STATIC, FINAL, SYNCHRONIZED...);
-13. Apply annotations;
-14. Apply generics at superclass; 
+08. Add instance fields using fluent API or parsing String;
+09. Add static fields using fluent API or parsing String;
+10. Add instance methods using fluent API or parsing String;
+11. Add static methods using fluent API or parsing String;
+12. Set java version for JRE compilation;
+13. Set visibility (PRIVATE, PUBLIC, PROTECTED);
+14. Set modifiers (VOLATILE, STATIC, FINAL, SYNCHRONIZED...);
+15. Apply annotations;
+16. Apply generics at superclass; 
 
 ## 3.	Install
 
@@ -32,11 +34,11 @@ Add in your pom.xml file
 <dependency>
   <groupId>net.sf.esfinge</groupId>
   <artifactId>classmock</artifactId>
-  <version>2.1.2</version>
+  <version>2.2</version>
 </dependency>
 ```
 #### If you prefer download of file:
-The library can be downloaded in [ClassMock](https://oss.sonatype.org/content/groups/staging/net/sf/esfinge/classmock/2.1.2/).
+The library can be downloaded in [ClassMock](https://oss.sonatype.org/content/groups/staging/net/sf/esfinge/classmock/2.2/).
 
 ## 4. Tutorial:
 
