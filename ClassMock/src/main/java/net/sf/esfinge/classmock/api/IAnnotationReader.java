@@ -5,7 +5,7 @@ import java.lang.annotation.Annotation;
 /**
  * Class responsible to retrieve annotations from this wrapper.
  */
-public interface IAnnotationReader extends IAnnotationPropertyReader {
+public interface IAnnotationReader extends IAnnotationPropertyReader, IAnnotationLocationReader {
 
     /**
      * Inform the annotation that is associated to this wrapper.

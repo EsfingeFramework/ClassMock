@@ -22,7 +22,6 @@ import org.objectweb.asm.Type;
 import org.objectweb.asm.signature.SignatureVisitor;
 import org.objectweb.asm.signature.SignatureWriter;
 
-import net.sf.esfinge.classmock.api.IAnnotationLocationReader;
 import net.sf.esfinge.classmock.api.IAnnotationReader;
 import net.sf.esfinge.classmock.api.IClassReader;
 import net.sf.esfinge.classmock.api.IFieldReader;
@@ -154,15 +153,7 @@ class ParseASM {
 
             for (final IAnnotationReader wrapper : field.annotations()) {
 
-                if (wrapper instanceof IAnnotationLocationReader) {
-
-                    final IAnnotationLocationReader location = (IAnnotationLocationReader) wrapper;
-
-                    if ((location.location() == null) || (location.location() == LocationEnum.FIELD)) {
-
-                        this.createAnnotation(fv, wrapper);
-                    }
-                } else {
+                if ((wrapper.location() == null) || (wrapper.location() == LocationEnum.FIELD)) {
 
                     this.createAnnotation(fv, wrapper);
                 }
@@ -449,8 +440,7 @@ class ParseASM {
 
         for (final IAnnotationReader wrapper : field.annotations()) {
 
-            if ((wrapper instanceof IAnnotationLocationReader)
-                            && (((IAnnotationLocationReader) wrapper).location() == LocationEnum.GETTER)) {
+            if (wrapper.location() == LocationEnum.GETTER) {
 
                 this.createAnnotation(mv, wrapper);
             }
@@ -490,8 +480,7 @@ class ParseASM {
 
         for (final IAnnotationReader wrapper : field.annotations()) {
 
-            if ((wrapper instanceof IAnnotationLocationReader)
-                            && (((IAnnotationLocationReader) wrapper).location() == LocationEnum.SETTER)) {
+            if (wrapper.location() == LocationEnum.SETTER) {
 
                 this.createAnnotation(mv, wrapper);
             }
