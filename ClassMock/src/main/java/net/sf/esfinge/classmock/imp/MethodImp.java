@@ -20,7 +20,7 @@ import net.sf.esfinge.classmock.api.enums.VisibilityEnum;
 /**
  * Class responsible for implement all definitions of a method.
  */
-public class MethodImp implements IMethodReader, IMethodWriter, Comparable<MethodImp> {
+public class MethodImp implements IMethodReader, IMethodWriter, Comparable<MethodImp>, Cloneable {
 
     private String name;
 
@@ -64,6 +64,41 @@ public class MethodImp implements IMethodReader, IMethodWriter, Comparable<Metho
         this.exceptions.addAll(method.exceptions());
         this.parameters.addAll(method.parameters());
         this.annotations.addAll(method.annotations());
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+
+        final MethodImp mi = new MethodImp(this.name());
+
+        mi.returnType(this.returnType());
+        mi.visibility(this.visibility());
+        mi.modifiers().addAll(this.modifiers());
+        mi.exceptions().addAll(this.exceptions());
+
+        // Deep clone
+        this.parameters().forEach(f -> {
+
+            try {
+                final FieldImp b = (FieldImp) ((FieldImp) f).clone();
+                mi.parameters().add(b);
+            } catch (final Exception e) {
+                // Went wrong
+            }
+        });
+
+        // Deep clone
+        this.annotations().forEach(a -> {
+
+            try {
+                final AnnotationImp b = (AnnotationImp) ((AnnotationImp) a).clone();
+                mi.annotation(b);
+            } catch (final Exception e) {
+                // Went wrong
+            }
+        });
+
+        return mi;
     }
 
     @Override

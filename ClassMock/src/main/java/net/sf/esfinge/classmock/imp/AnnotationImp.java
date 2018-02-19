@@ -13,7 +13,7 @@ import net.sf.esfinge.classmock.api.enums.LocationEnum;
 /**
  * Class responsible for implement all definitions of an annotation.
  */
-public class AnnotationImp implements IAnnotationReader, IAnnotationPropertyWriter, IAnnotationLocationWriter {
+public class AnnotationImp implements IAnnotationReader, IAnnotationPropertyWriter, IAnnotationLocationWriter, Cloneable {
 
     private IAnnotationWriter writer;
 
@@ -45,6 +45,15 @@ public class AnnotationImp implements IAnnotationReader, IAnnotationPropertyWrit
         this.annotation = reader.annotation();
         this.location = reader.location();
         this.properties.putAll(reader.properties());
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+
+        final AnnotationImp wp = new AnnotationImp(this);
+        wp.writer = this.writer;
+
+        return wp;
     }
 
     @Override

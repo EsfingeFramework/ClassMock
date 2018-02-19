@@ -17,7 +17,7 @@ import net.sf.esfinge.classmock.api.enums.VisibilityEnum;
 /**
  * Class responsible for implement all definitions of a field.
  */
-public class FieldImp implements IFieldReader, IFieldWriter, Comparable<FieldImp> {
+public class FieldImp implements IFieldReader, IFieldWriter, Comparable<FieldImp>, Cloneable {
 
     private String name;
 
@@ -49,6 +49,32 @@ public class FieldImp implements IFieldReader, IFieldWriter, Comparable<FieldImp
 
         this.name = name;
         this.type = type;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+
+        final FieldImp fi = new FieldImp(this.name(), this.type());
+
+        fi.modifiers.addAll(this.modifiers());
+        fi.generics(this.generics());
+        fi.hasGetter(this.hasGetter());
+        fi.hasSetter(this.hasSetter());
+        fi.value(this.value());
+        fi.visibility(this.visibility());
+
+        // Deep clone
+        this.annotations().forEach(a -> {
+
+            try {
+                final AnnotationImp b = (AnnotationImp) ((AnnotationImp) a).clone();
+                fi.annotation(b);
+            } catch (final Exception e) {
+                // Went wrong
+            }
+        });
+
+        return fi;
     }
 
     @Override
