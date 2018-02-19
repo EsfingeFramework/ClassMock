@@ -119,6 +119,37 @@ public interface IClassWriter extends IAnnotationWriter {
     IFieldWriter field(String name, Class<?> type);
 
     /**
+     * Define a way to parse a field with all properties and annotations from a String.
+     * You must remember this:
+     * <p>
+     * - Semicolon is Optional
+     * <p>
+     * - Is better specify all class type with their respective packages,
+     * if you don't it will try to find your class type for you.
+     * So, it is possible to load a class type with the <b>same name</b> but in a <b>different package</b>.
+     * <p>
+     * <code>
+     * Ex:<br>
+     * java.lang.String myField; <i>// the default visibility is private</i><br><br>
+     * Ex:<br>
+     * final static String myField; <i>// with modifiers (static and final)</i><br><br>
+     * Ex:<br>
+     * public String myField; <i>// with visibility (public)</i><br><br>
+     * Ex:<br>
+     * private static final String myField; <i>// with visibility and modifiers</i><br><br>
+     * Ex:<br>
+     * &#64;Id <i>// with annotation</i><br>
+     * &#64;Column(name = \"MY_COLUMN_NAME\", nullable = false) <i>// annotation and properties<br>
+     * private static final String myField; <i>// with visibility and modifiers</i>
+     * </code>
+     *
+     * @param fieldSignature
+     *            the signature of your field to parse.
+     * @return IFieldWriter
+     */
+    IFieldWriter fieldByParse(String fieldSignature);
+
+    /**
      * Add a method to your entity.
      *
      * @param name
@@ -137,9 +168,52 @@ public interface IClassWriter extends IAnnotationWriter {
     IMethodWriter method(IMethodReader method);
 
     /**
+     * Define a way to parse a method with all properties and annotations from a String.
+     * You must remember this:
+     * <p>
+     * - parentheses and braces are Optional
+     * <p>
+     * - Is better specify all class type with their respective packages,
+     * if you don't it will try to find your class type for you.
+     * So, it is possible to load a class type with the <b>same name</b> but in a <b>different package</b>.
+     * <p>
+     * <code>
+     * Ex:<br>
+     * java.lang.String getMyMethod(){}; <i>// the default visibility is public</i><br><br>
+     * Ex:<br>
+     * final static String getMyMethod; <i>// with modifiers (static and final)</i><br><br>
+     * Ex:<br>
+     * public String getMyMethod; <i>// with visibility (public)</i><br><br>
+     * Ex:<br>
+     * private static final String getMyMethod; <i>// with visibility and modifiers</i><br><br>
+     * Ex:<br>
+     * &#64;Id <i>// with annotation</i><br>
+     * &#64;Column(name = \"MY_COLUMN_NAME\", nullable = false) <i>// annotation</i><br>
+     * private static final String getMyMethod; <i>// with visibility and modifiers</i><br><br>
+     * Ex:<br>
+     * public String findById(@NotNull String code) throws NullPointerException; <i>// with parameter and exception</i>
+     * </code>
+     *
+     * @param methodSignature
+     *            the signature of your method to parse.
+     * @return IMethodWriter
+     */
+    IMethodWriter methodByParse(String methodSignature);
+
+    /**
      * Build your entity.
      *
      * @return entity created
      */
     Class<?> build();
+
+    /**
+     * Define a clone of all defined for your entity,
+     * but with a new name because the old one is already in use.
+     *
+     * @param name
+     *            of your new entity
+     * @return a new instance of IClassWriter
+     */
+    IClassWriter clone(String name);
 }
