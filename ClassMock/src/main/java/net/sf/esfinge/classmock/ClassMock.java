@@ -27,6 +27,7 @@ import net.sf.esfinge.classmock.imp.AnnotationImp;
 import net.sf.esfinge.classmock.imp.FieldImp;
 import net.sf.esfinge.classmock.imp.MethodImp;
 import net.sf.esfinge.classmock.imp.SuperClassImp;
+import net.sf.esfinge.classmock.parse.ParseASM;
 
 /**
  * Class responsible for implement all definitions of: Concrete Class, Abstract Class, Enum, Interface, Annotation. It uses the builder pattern to
