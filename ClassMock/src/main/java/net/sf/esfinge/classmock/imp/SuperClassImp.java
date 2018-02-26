@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import net.sf.esfinge.classmock.api.ISuperClassReader;
 import net.sf.esfinge.classmock.api.ISuperClassWriter;
 
@@ -51,5 +54,35 @@ public class SuperClassImp implements ISuperClassReader, ISuperClassWriter {
     public Collection<Class<?>> generics() {
 
         return this.generics;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return new HashCodeBuilder()
+                        .append(this.superclass())
+                        .append(this.generics())
+                        .build();
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+
+        final SuperClassImp other = (SuperClassImp) obj;
+
+        return new EqualsBuilder()
+                        .append(this.superclass(), other.superclass())
+                        .append(this.generics(), other.generics())
+                        .build();
     }
 }

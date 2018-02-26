@@ -4,6 +4,9 @@ import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import net.sf.esfinge.classmock.api.IAnnotationLocationWriter;
 import net.sf.esfinge.classmock.api.IAnnotationPropertyWriter;
 import net.sf.esfinge.classmock.api.IAnnotationReader;
@@ -51,7 +54,7 @@ public class AnnotationImp implements IAnnotationReader, IAnnotationPropertyWrit
     public Object clone() throws CloneNotSupportedException {
 
         final AnnotationImp wp = new AnnotationImp(this);
-        wp.writer = this.writer;
+        wp.setAnd(this.writer);
 
         return wp;
     }
@@ -112,5 +115,39 @@ public class AnnotationImp implements IAnnotationReader, IAnnotationPropertyWrit
     public String toString() {
 
         return this.annotation().getSimpleName();
+    }
+
+    @Override
+    public int hashCode() {
+
+        return new HashCodeBuilder()
+                        .append(this.location())
+                        .append(this.annotation())
+                        // .append(this.properties())
+                        .build();
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+
+        final AnnotationImp other = (AnnotationImp) obj;
+
+        return new EqualsBuilder()
+                        .append(this.location(), other.location())
+                        .append(this.annotation(), other.annotation())
+                        .build()
+                        && this.properties().entrySet().stream()
+                                        .allMatch(e -> other.properties().containsKey(e.getKey())
+                                                        && other.properties().containsValue(e.getValue()));
     }
 }

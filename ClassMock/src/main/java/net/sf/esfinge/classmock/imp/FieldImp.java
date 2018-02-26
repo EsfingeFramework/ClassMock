@@ -6,6 +6,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import net.sf.esfinge.classmock.api.IAnnotationPropertyWriter;
 import net.sf.esfinge.classmock.api.IAnnotationReader;
 import net.sf.esfinge.classmock.api.IFieldReader;
@@ -71,6 +74,7 @@ public class FieldImp implements IFieldReader, IFieldWriter, Comparable<FieldImp
                 fi.annotation(b);
             } catch (final Exception e) {
                 // Went wrong
+                e.printStackTrace();
             }
         });
 
@@ -238,5 +242,48 @@ public class FieldImp implements IFieldReader, IFieldWriter, Comparable<FieldImp
         sb.append(this.name());
 
         return sb.toString();
+    }
+
+    @Override
+    public int hashCode() {
+
+        return new HashCodeBuilder()
+                        .append(this.name())
+                        .append(this.type())
+                        .append(this.generics())
+                        .append(this.hasGetter())
+                        .append(this.hasSetter())
+                        .append(this.visibility())
+                        .append(this.modifiers())
+                        // .append(this.annotations())
+                        .build();
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+
+        final FieldImp other = (FieldImp) obj;
+
+        return new EqualsBuilder()
+                        .append(this.name(), other.name())
+                        .append(this.type(), other.type())
+                        .append(this.generics(), other.generics())
+                        .append(this.hasGetter(), other.hasGetter())
+                        .append(this.hasSetter(), other.hasSetter())
+                        .append(this.visibility(), other.visibility())
+                        .append(this.modifiers(), other.modifiers())
+                        .append(this.annotations().size(), other.annotations().size())
+                        .build()
+                        && this.annotations().stream().allMatch(a -> other.annotations().contains(a));
     }
 }

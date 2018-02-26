@@ -7,6 +7,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import net.sf.esfinge.classmock.api.IAnnotationPropertyWriter;
 import net.sf.esfinge.classmock.api.IAnnotationReader;
 import net.sf.esfinge.classmock.api.IFieldReader;
@@ -247,11 +250,16 @@ public class MethodImp implements IMethodReader, IMethodWriter, Comparable<Metho
     @Override
     public int hashCode() {
 
-        final int prime = 31;
-        int result = 1;
-        result = (prime * result) + ((this.name == null) ? 0 : this.name.hashCode());
-        result = (prime * result) + ((this.parameters == null) ? 0 : this.parameters.hashCode());
-        return result;
+        return new HashCodeBuilder()
+                        .append(this.visibility())
+                        .append(this.modifiers())
+                        .append(this.returnType())
+                        .append(this.name())
+                        .append(this.parameters())
+                        .append(this.exceptions())
+                        .append(this.annotations())
+                        .append(this.value())
+                        .build();
     }
 
     @Override
@@ -266,22 +274,21 @@ public class MethodImp implements IMethodReader, IMethodWriter, Comparable<Metho
         if (this.getClass() != obj.getClass()) {
             return false;
         }
+
         final MethodImp other = (MethodImp) obj;
-        if (this.name == null) {
-            if (other.name != null) {
-                return false;
-            }
-        } else if (!this.name.equals(other.name)) {
-            return false;
-        }
-        if (this.parameters == null) {
-            if (other.parameters != null) {
-                return false;
-            }
-        } else if (!this.parameters.equals(other.parameters)) {
-            return false;
-        }
-        return true;
+
+        return new EqualsBuilder()
+                        .append(this.visibility(), other.visibility())
+                        .append(this.modifiers(), other.modifiers())
+                        .append(this.returnType(), other.returnType())
+                        .append(this.name(), other.name())
+                        .append(this.exceptions(), other.exceptions())
+                        .append(this.value(), other.value())
+                        .append(this.parameters().size(), other.parameters().size())
+                        .append(this.annotations().size(), other.annotations().size())
+                        .build()
+                        && this.parameters().stream().allMatch(f -> other.parameters().contains(f))
+                        && this.annotations().stream().allMatch(a -> other.annotations().contains(a));
     }
 
     @Override

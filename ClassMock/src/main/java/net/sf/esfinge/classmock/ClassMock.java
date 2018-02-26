@@ -9,6 +9,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import net.sf.esfinge.classmock.api.IAnnotationPropertyWriter;
 import net.sf.esfinge.classmock.api.IAnnotationReader;
 import net.sf.esfinge.classmock.api.IClassReader;
@@ -385,6 +388,12 @@ public class ClassMock implements IClassReader, IClassWriter, Cloneable {
     }
 
     @Override
+    protected Object clone() throws CloneNotSupportedException {
+
+        return this.clone(this.name() + "Cloned");
+    }
+
+    @Override
     public IClassWriter clone(final String name) {
 
         final ClassMock clone = new ClassMock(name);
@@ -430,4 +439,56 @@ public class ClassMock implements IClassReader, IClassWriter, Cloneable {
 
         return clone;
     }
+
+    @Override
+    public int hashCode() {
+
+        final int prime = 31;
+        int result = 1;
+        result = (prime * result) + ((this.annotations == null) ? 0 : this.annotations.hashCode());
+
+        return new HashCodeBuilder()
+                        .append(this.name())
+                        .append(this.version())
+                        .append(this.visibility())
+                        .append(this.modifiers())
+                        .append(this.fields())
+                        .append(this.methods())
+                        .append(this.annotations())
+                        .append(this.interfaces())
+                        .append(this.superclass())
+                        .build();
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+
+        final ClassMock other = (ClassMock) obj;
+
+        return new EqualsBuilder()
+                        .append(this.name(), other.name())
+                        .append(this.version(), other.version())
+                        .append(this.visibility(), other.visibility())
+                        .append(this.modifiers(), other.modifiers())
+                        .append(this.fields().size(), other.fields().size())
+                        .append(this.methods().size(), other.methods().size())
+                        .append(this.annotations().size(), other.annotations().size())
+                        .append(this.interfaces(), other.interfaces())
+                        .append(this.superclass(), other.superclass())
+                        .build()
+                        && this.fields().stream().allMatch(f -> other.fields().contains(f))
+                        && this.methods().stream().allMatch(m -> other.methods().contains(m))
+                        && this.annotations().stream().allMatch(a -> other.annotations().contains(a));
+    }
+
 }
