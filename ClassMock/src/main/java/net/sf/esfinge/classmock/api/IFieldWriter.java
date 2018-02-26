@@ -36,7 +36,15 @@ public interface IFieldWriter extends IAnnotationWriter {
     IFieldWriter generics(Class<?> generics);
 
     /**
-     * Define the value of your field.
+     * Define the field's initial value. This parameter, which may be
+     * <tt>null</tt> if the field does not have an initial value,
+     * must be an {@link Integer}, a {@link Float}, a {@link Long}, a
+     * {@link Double} or a {@link String} (for <tt>int</tt>,
+     * <tt>float</tt>, <tt>long</tt> or <tt>String</tt> fields
+     * respectively). <b>This parameter is only used for static
+     * fields. Its value is ignored for non static fields</b>, which
+     * must be initialized through bytecode instructions in
+     * constructors or methods.
      *
      * @param value
      *            of the field
