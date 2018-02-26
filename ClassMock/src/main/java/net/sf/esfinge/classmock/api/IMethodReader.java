@@ -53,7 +53,7 @@ public interface IMethodReader {
     Collection<IAnnotationReader> annotations();
 
     /**
-     * Inform the exceptions that you want in your method throw.
+     * Inform the exceptions that you want in your method to throw.
      *
      * @return collection of exceptions
      */
