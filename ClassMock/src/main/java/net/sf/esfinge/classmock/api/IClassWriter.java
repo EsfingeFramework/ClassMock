@@ -139,7 +139,7 @@ public interface IClassWriter extends IAnnotationWriter {
      * private static final String myField; <i>// with visibility and modifiers</i><br><br>
      * Ex:<br>
      * &#64;Id <i>// with annotation</i><br>
-     * &#64;Column(name = \"MY_COLUMN_NAME\", nullable = false) <i>// annotation and properties<br>
+     * &#64;Column(name = \"MY_COLUMN_NAME\", nullable = false) <i>// annotation and properties</i><br>
      * private static final String myField; <i>// with visibility and modifiers</i>
      * </code>
      *
