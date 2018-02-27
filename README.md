@@ -1,10 +1,13 @@
+![](https://avatars0.githubusercontent.com/u/7748716)
+![](https://img.shields.io/github/stars/EsfingeFramework/ClassMock.svg?longCache=true&style=for-the-badge) ![](https://img.shields.io/github/forks/EsfingeFramework/ClassMock.svg?longCache=true&style=for-the-badge) ![](https://img.shields.io/github/tag/EsfingeFramework/ClassMock.svg?longCache=true&style=for-the-badge) ![](https://img.shields.io/github/release/EsfingeFramework/ClassMock.svg?longCache=true&style=for-the-badge) ![](https://img.shields.io/github/issues/EsfingeFramework/ClassMock.svg?longCache=true&style=for-the-badge)
+
 # ClassMock
 Test Tool for Metadata-Based and Reflection-Based Components
 
-## 1.	Introduction
+# 1. Introduction
 ClassMock is a framework that helps the creation of unit tests for components that use reflection or annotations. In this kind of classes, the behavior is dependent of the class structure. This way, each test case usually works with a different class created specifically for the test. With ClassMock is possible to define and generate classes in runtime, allowing a better test readability and logic sharing between tests.
 
-## 2.	Features
+# 2. Features
 The ClassMock framework has a very intuitive API that allows you to:
 
 01. create dynamic Annotation;
@@ -24,12 +27,12 @@ The ClassMock framework has a very intuitive API that allows you to:
 15. Apply annotations;
 16. Apply generics at superclass; 
 
-## 3.	Install
-
+# 3. Install
 The first step is to add the library file in your project.
 
-#### If you use Maven:
+## 3.1 Maven
 Add in your pom.xml file
+
 ```xml
 <dependency>
   <groupId>net.sf.esfinge</groupId>
@@ -37,131 +40,241 @@ Add in your pom.xml file
   <version>2.2</version>
 </dependency>
 ```
-#### If you prefer download of file:
-The library can be downloaded in [ClassMock](https://oss.sonatype.org/content/groups/staging/net/sf/esfinge/classmock/2.2/).
+## 3.2 Download Jar
+The jar library can be download at [Maven Central](https://oss.sonatype.org/content/groups/staging/net/sf/esfinge/classmock/2.2/).
 
-## 4. Tutorial:
+# 4. Concepts
+This section is necessary to understand some keywords that you will find at javadoc.
 
-### 4.1 Five seconds tutorial:
+ - **Entity:** Is the final product that you aims to create, it can be: *Concrete Class, Abstract Class, Enum, Interface or an Annotation*
+ - **Modifiers:** Are properties responsible for modify the definition of your Entity, methods or field. All this properties are well-known such as final, transient, static, abstract...
+ - **Visibility:** Is a kind of Modifier, that is responsible for the level of access/visibility that you define as public, private and protected. It was separated from Modifiers to facilitate the usage.
+ 
+**_WARNING:_** At byte code level all things should be informed as it would be by the compiler. Example all java classes extend Object even not explicit by the programmer. This is implicitly resolved by the compiler. But you must remember that you are creating entities at runtime without the compiler. 
 
-Bellow is a simple example of use.
+# 5. How to
+## 5.1 Create an Entity
+As you can see bellow this project tries to act like the compiler would do it for you.
 
 ```java
-// Without package
-Class<?> yourClass = ClassMock.of("YoursUniqueDynamicClassName").build();
-
-//or with a declared package
+// Optionally you can declare the package of your entity.
+// This allows you to create two or more entities with the same name, but in a different package
 Class<?> yourClass = ClassMock.of("my.pack.org.fake.domain.YoursUniqueDynamicClassName").build();
+
+// Creates a Concrete Class
+// Automatic add the SUPER modifier
+// Automatic set Object.class as your superclass()
+final Class<?> clazz = ClassMock.of("MyEspecialClass").build(); // Implicitly defines a concrete class (Default)
+final Class<?> clazz = ClassMock.of("MyEspecialClass2").asClass().build(); // Explicit defines a concrete class
+
+// Creates an Abstract Class
+// Automatic add the SUPER and ABSTRACT modifiers
+// Automatic set Object.class as your superclass()
+final Class<?> absClazz = ClassMock.of("AbstractMyEspecialClass")
+                                       .asAbstract() 
+                                       .build();
+// Creates an Interface
+// Automatic add the INTERFACE and ABSTRACT modifiers
+// Automatic set Object.class as your superclass()
+final Class<?> interf = ClassMock.of("IMyEspecialClass")
+                                       .asInterface()
+                                       .build();
+// Creates an Annotation
+// Automatic add the INTERFACE, ABSTRACT, and ANNOTATION modifiers
+// Automatic set Object.class as your superclass()
+// Automatic set Annotation.class as one of yours interfaces()
+final Class<?> annotationClazz = ClassMock.of("MyEspecialAnnotationClass")
+                                       .asAnnotation()
+                                       .build();
+// Creates an Enum
+// Automatic add the SUPER, FINAL, and ENUM modifiers
+// Automatic set Enum.class as your superclass()
+final Class<?> enumClazz = ClassMock.of("MyEspecialAnnotationClass")
+                                       .asEnum()
+                                       .build();
 ```
 
-### 4.2 Ten seconds tutorial:
+## 5.2 Add fields to the Entity
+The default properties for fields are:
+- Visibility on PRIVATE.
+- Always generate getter method.
+- Always generate setter method.
 
-Creating a class or interface.
+### 5.2.1 Instance Field
+As this is the default you don't have to specify nothing.
 
 ```java
-// Create a Concrete Class
-final Class<?> clazz = ClassMock.of("MyEspecialClass").build();
-final Class<?> clazz = ClassMock.of("MyEspecialClass").asClass().build();
-
-// Create an Abstract Class
-final Class<?> absClazz = ClassMock.of("AbstractMyEspecialClass").asAbstract().build();
-
-// Create an Interface
-final Class<?> interf = ClassMock.of("IMyEspecialClass").asInterface().build();
-
-// Create an Annotaion
-final Class<?> annotationClazz = ClassMock.of("MyEspecialAnnotationClass").asAnnotation().build();
-
-// Create an Enum
-final Class<?> enumClazz = ClassMock.of("MyEspecialAnnotationClass").asEnum().build();
+final IClassWriter mock = ClassMock.of("SingleClassName"); // Concrete Class
+// Add field
+mock.field("id", Integer. class)                           // Name and class type of the field
+                        .annotation(Id.class)              // JPA Annotation for Primary Key
+                        .and()                             // And add another annotation to this field
+                        .annotation(Column.class)          // JPA Annotation for column
+                        .property("name", "ID_CODE");      // On the annotation above set the property "name" with the value "ID_CODE"
+// Add field
+mock.field("name", String.class)                           // Name and class type of the field
+                        .annotation(Column.class)          // JPA Annotation for column
+                        .property("name", "TX_NAME");      // On the annotation above set the property "name" with the value "TX_NAME"
 ```
 
-### 4.1 One minute tutorial:
-
-A simple example of JPA entity.
+### 5.2.2 Class Field
+Note in the example bellow the presence of the **STATIC** modifier.
 
 ```java
-final IClassWriter mock = ClassMock.of("SingleClassName");
-mock.superclass(MySuperClass.class);
-mock.interfaces(Serializable.class);
-mock.annotation(Entity.class)
-                        .and()
-                        .annotation(Table.class)
-                        .property("schema", schemaName)
-                        .property("name", tableName);
-mock.field("serialVersionUID", long.class)
-                        .modifiers(ModifierEnum.STATIC, ModifierEnum.FINAL)
-                        .value(4376923548604344061L)
-                        .visibility(VisibilityEnum.PRIVATE);
-mock.field("id", Integer.class)
-                        .annotation(Id.class)
-                        .and()
-                        .annotation(Column.class)
-                        .property("name", "ID_CODE");
-mock.field("name", String.class)
-                        .annotation(Column.class)
-                        .property("name", "TX_NAME");
-mock.field("age", Integer.class)
-                        .annotation(Column.class)
-                        .property("name", "NU_AGE")
-                        .property("nullable", false);
-mock.field("total", Float.class)
-                        .annotation(Transient.class)
-                        .hasGetter(true)
-                        .hasSetter(false);
+final IClassWriter mock = ClassMock.of("SingleClassName");                  // Concrete Class
+mock.interfaces(Serializable.class);                                        // Implements Serializable
 
-Class<?> jpaClazz = ClassMock.of("MyEspecialClass").build();
-Object instance = clazz.newInstance();
+// Add field
+mock.field("serialVersionUID", long.class)                                  // Name and class type of the field
+                        .hasGetter(false)                                   // Disable the generation of the getter method
+                        .hasSetter(false)                                   // Disable the generation of the getter method
+                        .modifiers(ModifierEnum.STATIC, ModifierEnum.FINAL) // MANDATORY - The STATIC modifier
+                        .value(4376923548604344061L)                        // Initialize the constant
+                        .visibility(VisibilityEnum.PRIVATE);                // Visibility of the field
 ```
 
-### 4.2 Enum tutorial:
-
-A simple example of Enum.
+### 5.2.3 Enum Field
+This is used when you want to create an Enum constants. It is possible to add to the enum all kinds of field from the section 5.2.1 and 5.2.2
 
 ```java
+// Define Enum type as your output entity.
 final IClassWriter mock = ClassMock.of(this.getClassName()).asEnum();
 
-// Create enum constants
+// Makes a collection from an array
 Arrays.asList("BMW", "BENTLEY", "PORSCHE", "CADILLAC", "LEXUS", "FERRARI", "MERCEDES", "FORD")
-            .forEach(car -> {
-                mock.field(car, Enum.class)
-                                .hasGetter(false)
-                                .hasSetter(false)
-                                .visibility(VisibilityEnum.PUBLIC)
-                                .modifiers(ModifierEnum.FINAL, ModifierEnum.STATIC, ModifierEnum.ENUM);
+            .forEach(car -> { // Java 8 lambda
+                // Create enum constants
+                mock.field(car, Enum.class)                        // Name and class type of the field
+                                .hasGetter(false)                  // MANDATORY - Disable the generation of the getter method
+                                .hasSetter(false)                  // MANDATORY - Disable the generation of the setter method
+                                .visibility(VisibilityEnum.PUBLIC) // MANDATORY - Visibility on PUBLIC
+                                .modifiers(ModifierEnum.FINAL,     // MANDATORY - Modifier FINAL
+                                  ModifierEnum.STATIC,             // MANDATORY - Modifier FINAL
+                                  ModifierEnum.ENUM);              // MANDATORY - Modifier ENUM
             });
 
-final Class<?> clazz = mock.build();
-final Object[] enumConstants = clazz.getEnumConstants();
+// Creates an Enum type
+final Class<?> clazzEnum = mock.build();
+
+// Get an array of your enum constants
+final Object[] enumConstants = clazzEnum.getEnumConstants();
 ```
 
-### 4.3 Annotation tutorial:
+### 5.2.4 Field from String
+It is possible to define a field from a String input. You can define: the class type, the name, the modifiers and even add annotations to the field. You can omit the ";"
 
-A simple example of Annotation.
+**_WARNING:_** When you declare the class type always prefer to declare it with the package. It's possible to declare without the package, but we can't guarantee that the one found is the one you imagine to be loading. Because is possible to have the same name in different packages.  
 
 ```java
+// Field with JoinColumn annotation
+final StringBuilder sb = new StringBuilder();
+sb.append("@javax.persistence.JoinColumn(name = \"MY_COLUMN_NAME\", nullable = false)").append("\n");
+sb.append("private String ").append(this.fieldName);
+
+final IClassWriter mock = ClassMock.of("SingleClassName");   // Concrete Class
+
+// Add field
+mock.fieldByParse(sb.toString())                             // Parse the definition
+                        .hasGetter(true)                     // As is the default can be omitted
+                        .hasSetter(true)                     // As is the default can be omitted
+                        .annotation(Id.class)                // JPA Annotation for Primary Key
+                        .and()                               // And add another annotation to this field
+                        .annotation(Column.class)            // JPA Annotation for column
+                        .property("name", "MY_PRIMARY_KEY"); // On the annotation above set the property "name" with the value "MY_PRIMARY_KEY"
+
+// Creates a Concrete Class
+final Class<?> clazz = mock.build();
+```
+
+## 5.3 Add methods to the Entity
+The default properties for methods are:
+- Visibility on PUBLIC.
+- Void as the default return type.
+
+**_WARNING:_** ClassMock only creates a method signature, at this moment it is not possible to implement the method signature, but you can bypass this with techniques like proxies and mocks. 
+
+### 5.3.1 Instance Method
+As this is the default you don't have to specify nothing.
+
+```java
+final IClassWriter mock = ClassMock.of("SingleClassName");   // Concrete Class
+
+// Example without parameters
+mock.method("testIt")                                        // The method name
+                   .returnTypeAsVoid()                       // As is the default can be omitted
+                   .exceptions(Exception.class)              // Throws Exception
+                   .annotation(Override.class);              // Annotated with Override annotation
+
+// Creates a Concrete Class
+final Class<?> clazz = mock.build();
+```
+
+### 5.3.2 Class Method
+Note in the example bellow the presence of the **STATIC** modifier.
+
+```java
+final IClassWriter mock = ClassMock.of("SingleClassName");   // Concrete Class
+mock.method("testIt")                                        // The method name
+                   .modifiers(ModifierEnum.STATIC)           // MANDATORY - The STATIC modifier
+                   .returnTypeAsVoid()                       // As is the default can be omitted
+                   .exceptions(Exception.class)              // Throws Exception
+                   .annotation(Override.class);              // Annotated with Override annotation
+
+// Creates a Concrete Class
+final Class<?> clazz = mock.build();
+```
+
+### 5.3.3 Annotation Method
+This is used when you want to create an Annotation
+
+```java
+// Define Annotation type as your output entity.
 final IClassWriter mock = ClassMock.of(this.getClassName()).asAnnotation();
+
+// MANDATORY This line because makes possible to infer by reflection all the class definition
 mock.annotation(Retention.class)
                 .property(RetentionPolicy.RUNTIME);
-mock.method("alias")
-                .returnType(String.class)
-                .visibility(VisibilityEnum.PUBLIC)
-                .modifiers(ModifierEnum.ABSTRACT);
-mock.method("query")
-                .returnType(String.class)
-                .visibility(VisibilityEnum.PUBLIC)
-                .modifiers(ModifierEnum.ABSTRACT);
-mock.method("active")
-                .returnType(Boolean.class)
-                .visibility(VisibilityEnum.PUBLIC)
-                .modifiers(ModifierEnum.ABSTRACT)
-                .value(Boolean.TRUE); // default value for this property
+// Add Method
+mock.method("alias")                                  // The method name
+                .returnType(String.class)             // String as the return type
+                .visibility(VisibilityEnum.PUBLIC)    // MANDATORY - Visibility on PUBLIC
+                .modifiers(ModifierEnum.ABSTRACT);    // MANDATORY - Modifier ABSTRACT 
+// Add Method
+mock.method("query")                                  // The method name
+                .returnType(String.class)             // String as the return type
+                .visibility(VisibilityEnum.PUBLIC)    // MANDATORY - Visibility on PUBLIC
+                .modifiers(ModifierEnum.ABSTRACT);    // MANDATORY - Modifier ABSTRACT
+// Add Method
+mock.method("active")                                 // The method name
+                .returnType(Boolean.class)            // Boolean as the return type
+                .visibility(VisibilityEnum.PUBLIC)    // MANDATORY - Visibility on PUBLICs
+                .modifiers(ModifierEnum.ABSTRACT)     // MANDATORY - Modifier ABSTRACT
+                .value(Boolean.TRUE);                 // Set a default value for this method
 
+// Creates an Annotation
 final Class<?> annotation = mock.build();
 ```
 
-### 4.4 More tutorials:
+### 5.3.4 Method from String
+It is possible to define a method from a String input. You can define: the class type, the name, the modifiers and even add annotations to the field. You can omit () and {}.
 
+**_WARNING:_** When you declare the class type always prefer to declare it with the package. It's possible to declare without the package, but we can't guarantee that the one found is the one you imagine to be loading. Because is possible to have the same name in different packages.
+
+```java
+// Method with JoinColumn annotation, note the JoinColumn package!
+final StringBuilder sb = new StringBuilder();
+sb.append("@jabax.annotation.example.JoinColumn(name = \"MY_COLUMN_NAME\", nullable = false)").append("\n");
+sb.append("public void ").append(this.methodName).append("(){}");
+
+final IClassWriter mock = ClassMock.of("SingleClassName");   // Concrete Class
+mock.methodByParse(sb.toString())                            // Parse the definition
+
+// Creates a Concrete Class
+final Class<?> annotation = mock.build();
+```
+
+## 5.4 More examples
 See our [tests section](https://github.com/EsfingeFramework/ClassMock/blob/master/ClassMock/src/test/java/net/sf/esfinge/classmock/example/general/TesteClassMock.java) in the project.
 
-### [MIT Licensed](https://github.com/EsfingeFramework/ClassMock/blob/master/LICENSE)
+# 6. License
+[MIT Licensed](https://github.com/EsfingeFramework/ClassMock/blob/master/LICENSE)
