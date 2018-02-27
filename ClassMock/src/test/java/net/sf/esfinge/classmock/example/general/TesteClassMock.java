@@ -464,6 +464,8 @@ public class TesteClassMock {
                         .modifiers(ModifierEnum.STATIC)
                         .visibility(VisibilityEnum.PUBLIC);
         mock.field("serialVersionUID", long.class)
+                        .hasGetter(false)
+                        .hasSetter(false)
                         .value(123456789L)
                         .modifiers(ModifierEnum.STATIC)
                         .visibility(VisibilityEnum.PUBLIC);
