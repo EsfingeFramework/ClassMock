@@ -31,6 +31,8 @@ public class AuthorizationProxyTest {
     public void authorizedMethod() throws Throwable {
 
         Object proxy = AuthorizationProxy.createProxy(this.mock, new User("john", "admin"));
+        // Powermock can't spy Proxy.newProxyInstance instances
+        // https://github.com/powermock/powermock/issues/665
         proxy = PowerMockito.spy(proxy);
 
         PowerMockito.when(proxy, "execute").thenCallRealMethod();
