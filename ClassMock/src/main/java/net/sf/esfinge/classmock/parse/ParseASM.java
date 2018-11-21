@@ -89,7 +89,7 @@ public class ParseASM {
 
         if (this.reader.isClass() || this.reader.isAbstract()) {
 
-            final MethodVisitor mv = this.cw.visitMethod(VisibilityEnum.PUBLIC.getOpCodes(), "<init>", "()V", null, null);
+            final MethodVisitor mv = this.cw.visitMethod(this.reader.visibility().getOpCodes(), "<init>", "()V", null, null);
             mv.visitCode();
             mv.visitVarInsn(Opcodes.ALOAD, 0);
             mv.visitMethodInsn(Opcodes.INVOKESPECIAL, this.getInternalName(this.reader.superclass().superclass()), "<init>", "()V", false);
