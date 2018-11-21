@@ -208,6 +208,12 @@ public class ClassMock implements IClassReader, IClassWriter, Cloneable {
     }
 
     @Override
+    public IFieldWriter field(final String name) {
+
+        return this.field(name, null);
+    }
+
+    @Override
     public IFieldWriter field(final String name, final Class<?> type) {
 
         final FieldImp wrapper = new FieldImp(name, type);

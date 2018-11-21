@@ -491,6 +491,21 @@ public class TesteClassMock {
     }
 
     @Test
+    public void createClassWithInstanceSelfType() {
+
+        final IClassWriter mock = ClassMock.of(FactoryIt.getName());
+        mock.field("selfMe");
+        mock.field("selfMeTwo");
+
+        final Class<?> clazz = mock.build();
+
+        for (final Field field : clazz.getDeclaredFields()) {
+
+            Assert.assertEquals(field.getType(), clazz);
+        }
+    }
+
+    @Test
     public void createClassWithInstanceFieldWithAnnotations() {
 
         final IClassWriter mock = ClassMock.of(FactoryIt.getName());
@@ -601,6 +616,23 @@ public class TesteClassMock {
     }
 
     @Test
+    public void createClassWithReturningSelfType() {
+
+        final IClassWriter mock = ClassMock.of(FactoryIt.getName());
+        mock.method("testIt")
+                        .returnTypeAsSelfType()
+                        .exceptions(Exception.class)
+                        .annotation(Override.class);
+
+        final Class<?> clazz = mock.build();
+
+        for (final Method method : clazz.getDeclaredMethods()) {
+
+            Assert.assertEquals(method.getReturnType(), clazz);
+        }
+    }
+
+    @Test
     public void createClassWithMethodReader() {
 
         final MethodImp reader = new MethodImp("testIt");
@@ -613,17 +645,38 @@ public class TesteClassMock {
                         .annotation(Override.class)
                         .and()
                         .annotation(Override.class);
-        reader.parameter("param2", String.class)
+        reader.parameter("param2", Integer.class)
                         .annotation(Override.class)
                         .and()
+                        .annotation(Override.class);
+        reader.parameter("param3")
                         .annotation(Override.class);
 
         final IClassWriter mock = ClassMock.of(FactoryIt.getName());
         mock.method(reader);
 
-        for (final Method method : mock.build().getDeclaredMethods()) {
+        final Class<?> clazz = mock.build();
+
+        for (final Method method : clazz.getDeclaredMethods()) {
 
             Assert.assertEquals(method.getName(), "testIt");
+            Assert.assertEquals(method.getReturnType(), void.class);
+        }
+
+        for (final Field field : clazz.getDeclaredFields()) {
+
+            if ("param1".equals(field.getName())) {
+
+                Assert.assertEquals(field.getType(), String.class);
+
+            } else if ("param2".equals(field.getName())) {
+
+                Assert.assertEquals(field.getType(), Integer.class);
+
+            } else {
+
+                Assert.assertEquals(field.getType(), clazz);
+            }
         }
     }
 

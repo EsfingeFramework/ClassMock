@@ -18,7 +18,8 @@ public interface IMethodWriter extends IAnnotationWriter {
     IMethodWriter name(String name);
 
     /**
-     * Define the class type returned of your method.
+     * Define the class type returned of your method. If not specified,
+     * the default type is the same type of the generated entity.
      *
      * @param clazz
      *            of the returned type of the method
@@ -32,6 +33,13 @@ public interface IMethodWriter extends IAnnotationWriter {
      * @return set return as void
      */
     IMethodWriter returnTypeAsVoid();
+
+    /**
+     * The default type is the same type of the generated entity.
+     *
+     * @return set return as the one of the entity.
+     */
+    IMethodWriter returnTypeAsSelfType();
 
     /**
      * Define the visibility for your method.
@@ -79,7 +87,17 @@ public interface IMethodWriter extends IAnnotationWriter {
     IMethodWriter value(Object value);
 
     /**
-     * Define the parameters that you want in your method.
+     * Define the parameter that you want in your method.
+     * The default type is the same type of the generated entity.
+     *
+     * @param name
+     *            of the parameter
+     * @return IFieldWriter
+     */
+    IFieldWriter parameter(String name);
+
+    /**
+     * Define the parameter that you want in your method.
      *
      * @param name
      *            of the parameter

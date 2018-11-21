@@ -18,7 +18,8 @@ public interface IFieldWriter extends IAnnotationWriter {
     IFieldWriter name(final String name);
 
     /**
-     * Define the class type of your field.
+     * Define the class type of your field. If not specified,
+     * the default type is the same type of the generated entity.
      *
      * @param type
      *            of the field

@@ -113,6 +113,12 @@ public class MethodImp implements IMethodReader, IMethodWriter, Comparable<Metho
     }
 
     @Override
+    public IMethodWriter returnTypeAsSelfType() {
+
+        return this.returnType(null);
+    }
+
+    @Override
     public IMethodWriter returnTypeAsVoid() {
 
         return this.returnType(void.class);
@@ -124,6 +130,12 @@ public class MethodImp implements IMethodReader, IMethodWriter, Comparable<Metho
         this.returnType = clazz;
 
         return this;
+    }
+
+    @Override
+    public IFieldWriter parameter(final String name) {
+
+        return this.parameter(name, null);
     }
 
     @Override

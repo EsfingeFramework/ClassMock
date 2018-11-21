@@ -102,7 +102,10 @@ public class ParseASM {
     private void addEntity() {
 
         final int opcodes = this.reader.visibility().getOpCodes()
-                        + this.reader.modifiers().stream().mapToInt(m -> m.getOpCodes()).sum();
+                        + this.reader.modifiers()
+                                        .stream()
+                                        .mapToInt(m -> m.getOpCodes())
+                                        .sum();
 
         this.cw.visit(this.reader.version().getOpCodes(),
                         opcodes,
@@ -187,7 +190,10 @@ public class ParseASM {
 
             int parameterPosition = 0;
             final int opcodes = method.visibility().getOpCodes()
-                            + method.modifiers().stream().mapToInt(m -> m.getOpCodes()).sum();
+                            + method.modifiers()
+                                            .stream()
+                                            .mapToInt(m -> m.getOpCodes())
+                                            .sum();
 
             final MethodVisitor mv = this.cw.visitMethod(
                             opcodes,
@@ -196,7 +202,10 @@ public class ParseASM {
                             null,
                             method.exceptions().isEmpty()
                                             ? null
-                                            : method.exceptions().stream().map(clazz -> this.getInternalName(clazz)).toArray(String[]::new));
+                                            : method.exceptions()
+                                                            .stream()
+                                                            .map(clazz -> this.getInternalName(clazz))
+                                                            .toArray(String[]::new));
 
             for (final IAnnotationReader wrapper : method.annotations()) {
 
@@ -275,9 +284,13 @@ public class ParseASM {
         mv.visitCode();
 
         int counter = 0;
-        final int[] array = { Opcodes.ICONST_0, Opcodes.ICONST_1,
-                        Opcodes.ICONST_2, Opcodes.ICONST_3,
-                        Opcodes.ICONST_4, Opcodes.ICONST_5
+        final int[] array = {
+                        Opcodes.ICONST_0,
+                        Opcodes.ICONST_1,
+                        Opcodes.ICONST_2,
+                        Opcodes.ICONST_3,
+                        Opcodes.ICONST_4,
+                        Opcodes.ICONST_5
         };
 
         final List<IFieldReader> fields = this.reader.fields().stream()
@@ -428,7 +441,7 @@ public class ParseASM {
 
     private void createGetter(final IFieldReader field) {
 
-        final String typeDescriptor = this.getDescriptor(field.type());
+        final String typeDescriptor = this.getFieldType(field);
         final String typeGenericDescriptor = this.getDescriptor(field.generics());
 
         final MethodVisitor mv = this.cw.visitMethod(
@@ -468,7 +481,7 @@ public class ParseASM {
 
     private void createSetter(final IFieldReader field) {
 
-        final String typeDescriptor = this.getDescriptor(field.type());
+        final String typeDescriptor = this.getFieldType(field);
         final String typeGenericDescriptor = this.getDescriptor(field.generics());
 
         final MethodVisitor mv = this.cw.visitMethod(
@@ -617,12 +630,19 @@ public class ParseASM {
             // Normal fields
             fv = this.cw.visitField(opcodes,
                             field.name(),
-                            this.getDescriptor(field.type()),
+                            this.getFieldType(field),
                             this.getDescriptor(field.generics()), // TODO Implement
                             field.value());
         }
 
         return fv;
+    }
+
+    private String getFieldType(final IFieldReader field) {
+
+        return (field.type() == null)
+                        ? "L" + this.getEntityName() + ";"
+                        : this.getDescriptor(field.type());
     }
 
     @SuppressWarnings("unchecked")
@@ -696,13 +716,20 @@ public class ParseASM {
 
         for (final IFieldReader field : method.parameters()) {
 
-            sb.append(this.getDescriptor(field.type()));
+            sb.append(this.getFieldType(field));
         }
 
         sb.append(")");
-        sb.append(this.getDescriptor(method.returnType()));
+        sb.append(this.getMethodType(method));
 
         return sb.toString();
+    }
+
+    private String getMethodType(final IMethodReader method) {
+
+        return (method.returnType() == null)
+                        ? "L" + this.getEntityName() + ";"
+                        : this.getDescriptor(method.returnType());
     }
 
     private String getGetterName(final IFieldReader field) {

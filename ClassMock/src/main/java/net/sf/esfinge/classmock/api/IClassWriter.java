@@ -119,6 +119,15 @@ public interface IClassWriter extends IAnnotationWriter {
     IFieldWriter field(String name, Class<?> type);
 
     /**
+     * The default type is the same type of the generated entity.
+     *
+     * @param name
+     *            of the field
+     * @return IFieldWriter
+     */
+    IFieldWriter field(String name);
+
+    /**
      * Define a way to parse a field with all properties and annotations from a String.
      * You must remember this:
      * <p>
