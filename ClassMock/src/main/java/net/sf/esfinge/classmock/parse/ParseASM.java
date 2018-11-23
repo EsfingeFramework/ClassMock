@@ -26,6 +26,7 @@ import net.sf.esfinge.classmock.api.IAnnotationReader;
 import net.sf.esfinge.classmock.api.IClassReader;
 import net.sf.esfinge.classmock.api.IFieldReader;
 import net.sf.esfinge.classmock.api.IMethodReader;
+import net.sf.esfinge.classmock.api.Self;
 import net.sf.esfinge.classmock.api.enums.LocationEnum;
 import net.sf.esfinge.classmock.api.enums.ModifierEnum;
 import net.sf.esfinge.classmock.api.enums.VisibilityEnum;
@@ -640,7 +641,7 @@ public class ParseASM {
 
     private String getFieldType(final IFieldReader field) {
 
-        return (field.type() == null)
+        return (Self.class.isAssignableFrom(field.type()))
                         ? "L" + this.getEntityName() + ";"
                         : this.getDescriptor(field.type());
     }
@@ -727,7 +728,7 @@ public class ParseASM {
 
     private String getMethodType(final IMethodReader method) {
 
-        return (method.returnType() == null)
+        return (Self.class.isAssignableFrom(method.returnType()))
                         ? "L" + this.getEntityName() + ";"
                         : this.getDescriptor(method.returnType());
     }

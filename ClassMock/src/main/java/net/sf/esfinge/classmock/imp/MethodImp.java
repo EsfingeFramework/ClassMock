@@ -16,6 +16,7 @@ import net.sf.esfinge.classmock.api.IFieldReader;
 import net.sf.esfinge.classmock.api.IFieldWriter;
 import net.sf.esfinge.classmock.api.IMethodReader;
 import net.sf.esfinge.classmock.api.IMethodWriter;
+import net.sf.esfinge.classmock.api.Self;
 import net.sf.esfinge.classmock.api.enums.LocationEnum;
 import net.sf.esfinge.classmock.api.enums.ModifierEnum;
 import net.sf.esfinge.classmock.api.enums.VisibilityEnum;
@@ -115,7 +116,7 @@ public class MethodImp implements IMethodReader, IMethodWriter, Comparable<Metho
     @Override
     public IMethodWriter returnTypeAsSelfType() {
 
-        return this.returnType(null);
+        return this.returnType(Self.class);
     }
 
     @Override
@@ -135,7 +136,7 @@ public class MethodImp implements IMethodReader, IMethodWriter, Comparable<Metho
     @Override
     public IFieldWriter parameter(final String name) {
 
-        return this.parameter(name, null);
+        return this.parameter(name, Self.class);
     }
 
     @Override

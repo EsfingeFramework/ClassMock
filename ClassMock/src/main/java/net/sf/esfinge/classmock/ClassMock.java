@@ -22,6 +22,7 @@ import net.sf.esfinge.classmock.api.IMethodReader;
 import net.sf.esfinge.classmock.api.IMethodWriter;
 import net.sf.esfinge.classmock.api.ISuperClassReader;
 import net.sf.esfinge.classmock.api.ISuperClassWriter;
+import net.sf.esfinge.classmock.api.Self;
 import net.sf.esfinge.classmock.api.enums.JavaEnum;
 import net.sf.esfinge.classmock.api.enums.LocationEnum;
 import net.sf.esfinge.classmock.api.enums.ModifierEnum;
@@ -210,7 +211,7 @@ public class ClassMock implements IClassReader, IClassWriter, Cloneable {
     @Override
     public IFieldWriter field(final String name) {
 
-        return this.field(name, null);
+        return this.field(name, Self.class);
     }
 
     @Override
