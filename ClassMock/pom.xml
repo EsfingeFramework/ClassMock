@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.sf.esfinge</groupId>
 	<artifactId>classmock</artifactId>
-	<version>2.2</version>
+	<version>2.3</version>
 	<packaging>jar</packaging>
 
 	<licenses>
@@ -200,7 +200,7 @@
 		<url>https://github.com/EsfingeFramework/ClassMock.git</url>
 		<connection>scm:git:git://github.com/EsfingeFramework/gamification.git</connection>
 		<developerConnection>scm:git:git://github.com/EsfingeFramework/gamification.git</developerConnection>
-		<tag>classmock-2.2-SNAPSHOT</tag>
+		<tag>classmock-2.3-SNAPSHOT</tag>
 	</scm>
 
 	<name>Classmock</name>

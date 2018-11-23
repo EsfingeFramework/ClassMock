@@ -37,11 +37,11 @@ Add in your pom.xml file
 <dependency>
   <groupId>net.sf.esfinge</groupId>
   <artifactId>classmock</artifactId>
-  <version>2.2</version>
+  <version>2.3</version>
 </dependency>
 ```
 ## 3.2 Download Jar
-The jar library can be download at [Maven Central](https://oss.sonatype.org/content/groups/staging/net/sf/esfinge/classmock/2.2/).
+The jar library can be download at [Maven Central](https://oss.sonatype.org/content/groups/staging/net/sf/esfinge/classmock/2.3/).
 
 # 4. Concepts
 This section is necessary to understand some keywords that you will find at javadoc.
@@ -114,6 +114,11 @@ mock.field("id", Integer. class)                           // Name and class typ
 // Add field
 mock.field("name", String.class)                           // Name and class type of the field
                         .annotation(Column.class)          // JPA Annotation for column
+                        .property("name", "TX_NAME");      // On the annotation above set the property "name" with the value "TX_NAME"
+
+// Add field of Self Type of the entity
+mock.field("mySelfType")                                   // Name and self type of the entity for the field (Self.class)
+                        .annotation(JoinColumn.class)      // JPA Annotation for column (FK)
                         .property("name", "TX_NAME");      // On the annotation above set the property "name" with the value "TX_NAME"
 ```
 
@@ -202,6 +207,12 @@ final IClassWriter mock = ClassMock.of("SingleClassName");   // Concrete Class
 // Example without parameters
 mock.method("testIt")                                        // The method name
                    .returnTypeAsVoid()                       // As is the default can be omitted
+                   .exceptions(Exception.class)              // Throws Exception
+                   .annotation(Override.class);              // Annotated with Override annotation
+
+// Example returning the type of the entity
+mock.method("testIt")                                        // The method name
+                   .returnTypeAsSelfType()                   // Self.class Type of the entity
                    .exceptions(Exception.class)              // Throws Exception
                    .annotation(Override.class);              // Annotated with Override annotation
 
