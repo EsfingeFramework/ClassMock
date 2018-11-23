@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -712,5 +713,32 @@ public class TesteClassMock {
 
         Assert.assertTrue(String.class.isAssignableFrom((Class<?>) type0));
         Assert.assertTrue(Integer.class.isAssignableFrom((Class<?>) type1));
+    }
+
+    @Test
+    public void createClassWithDefaultConstructor() {
+
+        for (final VisibilityEnum visibility : VisibilityEnum.values()) {
+
+            final Class<?> clazz = ClassMock.of(FactoryIt.getName()).visibility(visibility).build();
+            final Constructor<?> constructor = clazz.getDeclaredConstructors()[0];
+
+            if (visibility == VisibilityEnum.PUBLIC) {
+
+                Assert.assertTrue(Modifier.isPublic(constructor.getModifiers()));
+
+            } else if (visibility == VisibilityEnum.PRIVATE) {
+
+                Assert.assertTrue(Modifier.isPrivate(constructor.getModifiers()));
+
+            } else {
+
+                Assert.assertTrue(Modifier.isProtected(constructor.getModifiers()));
+            }
+        }
+
+        for (int i = 0; i < 3; i++) {
+
+        }
     }
 }
