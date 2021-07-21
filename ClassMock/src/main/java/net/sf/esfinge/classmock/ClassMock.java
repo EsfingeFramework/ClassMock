@@ -473,10 +473,7 @@ public class ClassMock implements IClassReader, IClassWriter, Cloneable {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (this.getClass() != obj.getClass()) {
+        if ((obj == null) || (this.getClass() != obj.getClass())) {
             return false;
         }
 
