@@ -109,7 +109,7 @@ public final class ParseMethodSignature {
 
                         annotationImp.property(
                                         pair.getNameAsString(),
-                                        pair.getValue().toString().replaceAll("\"", ""));
+                                        pair.getValue().toString().replace("\"", ""));
                     });
                 });
 
@@ -129,7 +129,7 @@ public final class ParseMethodSignature {
         Class<?> clazz = void.class;
         final String returnType = md.getType().asString();
 
-        if (!returnType.equals("void")) {
+        if (!"void".equals(returnType)) {
 
             final List<String> classNames = new ArrayList<>();
 

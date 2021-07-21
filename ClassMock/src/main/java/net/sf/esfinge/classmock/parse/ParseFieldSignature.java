@@ -99,7 +99,7 @@ public final class ParseFieldSignature {
 
                         annotationImp.property(
                                         pair.getNameAsString(),
-                                        pair.getValue().toString().replaceAll("\"", ""));
+                                        pair.getValue().toString().replace("\"", ""));
                     });
                 });
 
