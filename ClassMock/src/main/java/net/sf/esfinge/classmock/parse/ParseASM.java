@@ -105,7 +105,7 @@ public class ParseASM {
         final int opcodes = this.reader.visibility().getOpCodes()
                         + this.reader.modifiers()
                                         .stream()
-                                        .mapToInt(m -> m.getOpCodes())
+                                        .mapToInt(ModifierEnum::getOpCodes)
                                         .sum();
 
         this.cw.visit(this.reader.version().getOpCodes(),
@@ -113,13 +113,13 @@ public class ParseASM {
                         this.getEntityName(),
                         this.addGenericSuperClassSignature(),
                         this.getInternalName(this.reader.superclass().superclass()),
-                        this.reader.interfaces().stream().map(i -> this.getInternalName(i)).toArray(String[]::new));
+                        this.reader.interfaces().stream().map(this::getInternalName).toArray(String[]::new));
     }
 
     private String getEntityName() {
 
         return this.reader.name().contains(".")
-                        ? this.reader.name().replaceAll("\\.", "/")
+                        ? this.reader.name().replace('.', '/')
                         : this.reader.name();
     }
 
@@ -193,7 +193,7 @@ public class ParseASM {
             final int opcodes = method.visibility().getOpCodes()
                             + method.modifiers()
                                             .stream()
-                                            .mapToInt(m -> m.getOpCodes())
+                                            .mapToInt(ModifierEnum::getOpCodes)
                                             .sum();
 
             final MethodVisitor mv = this.cw.visitMethod(
@@ -205,7 +205,7 @@ public class ParseASM {
                                             ? null
                                             : method.exceptions()
                                                             .stream()
-                                                            .map(clazz -> this.getInternalName(clazz))
+                                                            .map(this::getInternalName)
                                                             .toArray(String[]::new));
 
             for (final IAnnotationReader wrapper : method.annotations()) {
@@ -331,7 +331,6 @@ public class ParseASM {
                     mv.visitFieldInsn(Opcodes.PUTSTATIC, this.getEntityName(), field.name(), this.getEntityEnumNameArray());
                     mv.visitInsn(Opcodes.RETURN);
                     mv.visitMaxs(1, 0);
-                    mv.visitEnd();
 
                 } else {
 
@@ -339,10 +338,9 @@ public class ParseASM {
                     mv.visitFieldInsn(Opcodes.PUTSTATIC, this.getEntityName(), field.name(), this.getEntityEnumNameArray());
                     mv.visitInsn(Opcodes.RETURN);
                     mv.visitMaxs(4, 0);
-                    mv.visitEnd();
                 }
+                mv.visitEnd();
             } else {
-
                 if (isFistTime) {
 
                     isFistTime = false;
@@ -352,22 +350,20 @@ public class ParseASM {
                     mv.visitTypeInsn(Opcodes.ANEWARRAY, this.getEntityName());
                     mv.visitInsn(Opcodes.DUP);
                     mv.visitInsn(array[counter++]);
-                    mv.visitFieldInsn(Opcodes.GETSTATIC, this.getEntityName(), field.name(), this.getEntityEnumName());
 
                 } else if (counter < array.length) {
 
                     mv.visitInsn(Opcodes.AASTORE);
                     mv.visitInsn(Opcodes.DUP);
                     mv.visitInsn(array[counter++]);
-                    mv.visitFieldInsn(Opcodes.GETSTATIC, this.getEntityName(), field.name(), this.getEntityEnumName());
 
                 } else {
 
                     mv.visitInsn(Opcodes.AASTORE);
                     mv.visitInsn(Opcodes.DUP);
                     mv.visitIntInsn(Opcodes.BIPUSH, counter++);
-                    mv.visitFieldInsn(Opcodes.GETSTATIC, this.getEntityName(), field.name(), this.getEntityEnumName());
                 }
+                mv.visitFieldInsn(Opcodes.GETSTATIC, this.getEntityName(), field.name(), this.getEntityEnumName());
             }
         }
     }
@@ -604,7 +600,7 @@ public class ParseASM {
 
         FieldVisitor fv = null;
         final int opcodes = field.visibility().getOpCodes()
-                        + field.modifiers().stream().mapToInt(m -> m.getOpCodes()).sum();
+                        + field.modifiers().stream().mapToInt(ModifierEnum::getOpCodes).sum();
 
         if (this.reader.isEnum() && field.modifiers().contains(ModifierEnum.STATIC)) {
 
