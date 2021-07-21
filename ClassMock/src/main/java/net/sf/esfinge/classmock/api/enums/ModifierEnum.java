@@ -57,7 +57,7 @@ public enum ModifierEnum {
 
     private int opCodes;
 
-    private ModifierEnum(final int opCodes) {
+    ModifierEnum(final int opCodes) {
 
         this.opCodes = opCodes;
     }

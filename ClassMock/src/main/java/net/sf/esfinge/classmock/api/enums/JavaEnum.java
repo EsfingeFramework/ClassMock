@@ -33,7 +33,7 @@ public enum JavaEnum {
 
     private int opCodes;
 
-    private JavaEnum(final int opCodes) {
+    JavaEnum(final int opCodes) {
 
         this.opCodes = opCodes;
     }

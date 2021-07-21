@@ -18,7 +18,7 @@ public enum VisibilityEnum {
 
     private int opCodes;
 
-    private VisibilityEnum(final int opCodes) {
+    VisibilityEnum(final int opCodes) {
 
         this.opCodes = opCodes;
     }
