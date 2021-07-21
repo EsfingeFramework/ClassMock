@@ -16,7 +16,7 @@ public interface ISuperClassReader {
 
     /**
      * List all the parameters type used at the generic signature.
-     * 
+     *
      * @return collection of parameters
      */
     Collection<Class<?>> generics();
