@@ -41,12 +41,12 @@ public class ClassMockUtils {
             Method method = null;
 
             try {
-                method = bean.getClass().getMethod(ClassMockUtils.propertyToGetter(property), new Class[] {});
+                method = bean.getClass().getMethod(ClassMockUtils.propertyToGetter(property));
             } catch (final NoSuchMethodException e) {
-                method = bean.getClass().getMethod(ClassMockUtils.propertyToGetter(property, true), new Class[] {});
+                method = bean.getClass().getMethod(ClassMockUtils.propertyToGetter(property, true));
             }
 
-            return method.invoke(bean, new Object[] {});
+            return method.invoke(bean);
 
         } catch (final Exception e) {
 
@@ -102,8 +102,9 @@ public class ClassMockUtils {
                 if (type == null) {
 
                     throw new RuntimeException("The setter method of " + property + " does not have a parameter.");
-
-                } else if (type.isArray() && !type.getComponentType().isPrimitive()) {
+                }
+                
+                if (type.isArray() && !type.getComponentType().isPrimitive()) {
 
                     final Object[] array = (Object[]) Array.newInstance(type.getComponentType(), ((Object[]) value).length);
 
@@ -240,9 +241,9 @@ public class ClassMockUtils {
             }
 
             try {
-                returnType = beanClass.getMethod(ClassMockUtils.propertyToGetter(property), new Class[] {}).getReturnType();
+                returnType = beanClass.getMethod(ClassMockUtils.propertyToGetter(property)).getReturnType();
             } catch (final NoSuchMethodException e) {
-                returnType = beanClass.getMethod(ClassMockUtils.propertyToGetter(property, true), new Class[] {}).getReturnType();
+                returnType = beanClass.getMethod(ClassMockUtils.propertyToGetter(property, true)).getReturnType();
             }
 
             if (returnType == null) {
